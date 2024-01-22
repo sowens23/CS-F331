@@ -24,6 +24,45 @@
 
 # Week-1
 [Top](#TOP)
+## 2024-01-21
+  ### Extra Reading (Compilers & Interpreters)
+  ### Runtime
+  - **Runtime** occurs during program **execution**, the computations it specifies, actually occur.
+  - **Runtime system** is code that assists in, or preforms, execution of a program.
+    - Typically includes low level I/O operations, and **memory management**
+    - C++ *new* and *delete* call code in the runtime system
+    - In languages like Lua, Python, and Java there exists runtime systems that do **garbage collection** which cleans up no-longer-used memory blocks
+  ### Compilers
+  #### Introduction
+  - A **compiler** turns **source language** (programming language) and turns it into the **target language**. This is called **compilation**.
+  - A compiler might target **native code** (machine language directly executed by a computer's processor) or it may target another programming language.
+  - **byte code** are programming languages that are intended solely as target languages which are not aimed at readability for humans. 
+    - Codes like this include; **Java byte code** which is executed by **Java virtual machine** (JVM)
+  - Generally we only use the term "compiler" when all of the following are true;
+    1. The source and target languages differ significantly.
+    2. The target language is lower-level than the source.
+    3. The transformation is done with execution as the goal.
+    - If this is not the case, then technically you might refer to it as a **preprocessor** or an **assembler**.
+    - Software that compiles code which operates at the same level of abstraction may also be called a compiler, but more accurately would be described as a **transcompiler** or **transpiler**
+  #### Multi-Stage Compilation
+  - Good compilers will proceed in a number of distinct steps. Transforming code into **intermediate representations** (IR), which ultimately becomes the target language
+    - For example, the C++ compiler used by Apple's Xcode is called **Clang**, which does not target native code, but intermediate machine-independent code specified by the **Low-Level Virtual Machine (LLVM)** project, this intermediate code is then converted to native code. 
+  - There are advantages to breaking down your compilation process into multiple stages.
+  - To 
+  #### Optimization
+  - To **optimize** code means to transform it so that it still performs the same task, but is better somehow, usually faster.
+  - A compiler that can perform optimization is an **optimizing compiler**. Today, most major compilers are optimizing.
+  - Many integrated development enviroments (IDEs) have debug build and a release build.
+    - The major difference is that some optimizations are only in the release build.
+  ### Interpreters
+  - An **interpreter** takes code in some language, and executes it. This is called **interpretation**.
+  - Some interpreters allow code to be executed in an **interactive environment** where a use can type in a statement to have executed, and then the interpreter will request another expression, or code block. This is called **REPL (Read-Eval-Print Loop)**, the term comes from Lisp family of programming languages
+  ### JIT Compilers
+  - Some code transformations require information only available at runtime. This can be referred to as **profile-based optimizations** which transform code based on portions of the code which spend most time executing. Newer compilers can perform these transformations while the code runs, this is called **dynamic compilation**.
+  - Dynamic compilation is commonly referred to as **Just-In-Time (JIT)** compilation, and it's compilers called **JIT Compilers**, or simply **JIT**.
+  - A typical strategy for a JIT is to do static compilations of source code into byte code. Then when execution begins, the byte code is replaced by native code, chunk by chunk, which preforms the tasks more quickly.
+    - This is in fact how LuaJIT does JIT compilation.
+
 ## 2024-01-19
   ### Review
   - **Dynamic**: *at runtime*.
