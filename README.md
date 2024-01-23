@@ -21,6 +21,29 @@
   | Weekly Notes | Assignments | Other Notes |
   | --- | --- | --- |
   | [Week-1](#Week-1) | | |
+  | [Week-2](#Week-2) | | |
+  | [Week-3](#Week-3) | | |
+  | [Week-4](#Week-4) | | |
+  | [Week-5](#Week-5) | | |
+  | [Week-6](#Week-6) | | |
+  | [Week-7](#Week-7) | | |
+  | [Week-8](#Week-8) | | |
+  | [Week-9](#Week-9) | | |
+  | [Week-10](#Week-10) | | |
+  | [Week-11](#Week-11) | | |
+  | [Week-12](#Week-12) | | |
+  | [Week-13](#Week-13) | | |
+  | [Week-13](#Week-13) | | |
+  | [Week-14](#Week-14) | | |
+
+# Week-2
+[Top](#TOP)
+## 2024-01-22
+  ### Review (Formal Languages)
+  - A **formal language** is *only* a set of strings.
+    - C++ is **not** a formal language.
+  - We can specify the syntax of **regular expressions** or (**regexes**) by showing how to build them from small pieces.
+    - We can list the individual pieces ex. a single character: a, and an empty string $$\\epsilon$$
 
 # Week-1
 [Top](#TOP)
