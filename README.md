@@ -37,6 +37,79 @@
   | [Week-13](#Week-13) | | |
   | [Week-14](#Week-14) | | |
 
+# Week-3
+[Top](#TOP)
+## 2024-01-29
+  [checklua.lua](https://github.com/sowens23/CS-F331/blob/main/inclass/check_lua.lua)
+  ### Review
+  - EBNF typically includes two important features
+    - Brackets "[]" surround optional sections
+    - Braces "{}" surround optional, repeatable sections
+  ### PL Category: Dynamic PLs
+  - Batch File Syntax
+    ```
+    curl -o http://b.us/dog.c
+    curl -o http://b.us/cat.c
+    curl -o http://b.us/asp.c
+    curl -o http://b.us/bat.c
+    ```
+  - Script Shell (Bash) Syntax
+    ```
+    for n in dog cat asp bat eel
+    do 
+      curl -o http://b.us/$n.c
+    done
+    ```
+  - To improve scripting languages, **AWK** named after it's authors A. Aho, P. Weinberger, and B. Kernighan was developed in Bell Labs in the 1970's was one of the first scripting languages*?
+  - In 1987 **Perl** was released, based on AWK, developed by Larry Wall. One of the first full-featured PLs w/ data structures and could access operating system services.
+  - Then came Python 1991, Lua 1993, Ruby, JavaScript and PHP in 1995.
+  - All the above languages can be considered **dynamic PLs**
+  ### Introduction to Lua
+  - Lua was developed in 1993 in Brazil to combat inaccessbile PLs from other countries. It was based on SOL (Simple Object Language) and had a meaning of sun, so they named in Lua, which means moon.
+  - Lua consists of much less punctuation that other languages.
+    ```
+    function fibo(n)
+      local currfib, nextfib = 0, 1
+      for i = 1, n do
+        currfib, nextfib = nextfib, currfib + nextfib
+      end
+      return currfib
+    end
+    ```
+  - Lua has exactly 8 types.
+    - Number, String, Boolean, Table, Function, Nil, Userdata, and Thread. You cannot define more types than this.
+  - **Eager evaluation** is when an expression is evaluated when it is encountered during execution. This is how Lua works.
+  - **Lazy evaluation** is when an expression is evaluated only when it's value is needed.
+  - Let's program in Lua
+    ```
+    #!/usr/bin/env lua
+    -- hello.lua
+    -- Spencer Baysinger
+    -- 2024/01/29
+    -- Hello World in Lua
+
+    io.write("Hello, world!\n")
+    ```
+  - Fibo in Lua
+    ```
+    function fibo(n)
+      local currfib, nextfib = 0, 1
+      for i = 1, n do 
+        currfib, nextfib = nextfib, currfib + nextfib
+      end
+      return currfib
+    end
+
+    how_many_to_print = 20
+
+    io.write("Fibbonacci Numbers\n")
+    for i = 0, how_many_to_print-1 do
+      io.write("F("..i..") = "..fibo(i).."\n")
+    end
+
+    io.write("\n")
+    ```
+
 # Week-2
 [Top](#TOP)
 ## 2024-01-27 Weekly Quiz, and Homework 1 Notes
