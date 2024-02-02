@@ -1,3 +1,6 @@
+Spencer Owens
+CS F331 - Assignment 1
+
 A: Decode the secret Lua message.
     Secret Message #1: BE SURE TO DRINK YOUR OVALTINE
 
@@ -28,13 +31,15 @@ G: This problem deals with the following grammar
     3. S --> SS --> 1|2 (see 1 and 2 parse tree banches below)
         1. SS --> xyS
         2. SS --> Sxy
+
+
     4.  S --> A | B
         A --> xy
         B --> SB | S
 
 H???: Consider the language containing those strings consisting of two or more 'a' characters followed by a single 'b' character. ex {aab, aaab, aaaab, aaaaab, ...}
     1. (a)(a+)(b)
-    2???.  S -aa-> X
+    2.  S -aa-> X
         X -a-> X
         X -b-> accepting state
     3.  S --> ABC
@@ -43,6 +48,6 @@ H???: Consider the language containing those strings consisting of two or more '
         C --> b
     4. No, because there is only one parse tree.
 
-I???: In class we described the syntax of regular expressions using informal methods. In this exercise, you will describe the syntax using a formal specification method.
+I: In class we described the syntax of regular expressions using informal methods. In this exercise, you will describe the syntax using a formal specification method.
     <reg-exp> ::= <char> | <char> <reg-exp> 
     <char-non-terminals> ::= <char>
