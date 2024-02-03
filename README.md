@@ -39,6 +39,67 @@
 
 # Week-3
 [Top](#TOP)
+## 2024-02-02
+  [checklua.lua](https://github.com/sowens23/CS-F331/blob/main/inclass/)
+  ### Review
+  - In Lua, only *false* and *nil* are **truthy**. All other values are **falsy**.
+  ### Lua: Objects
+  - You can make tables. Tables can hold basically anything, including functions.
+  - We can also make a meta-table, which is basically another table, associated to the linked primary table.
+    ```lua
+    -- pets.lua
+    -- Spencer Baysinger
+    -- 2024-02-02
+    -- Source for "class" Dog (and others?)
+
+    -- Here is the primary table
+    local pets = {}
+
+    -- Here is a meta table??
+    pets.Dog = {}
+    -- Dog index
+    function pets.Dog.__index(tbl, key)
+      return pets.Dog[key]
+    end
+
+    function pets.Dog.new(barkSound)
+      if barkSound == nil then 
+        barksound = "Ni!" -- We are the dogs that say "Ni!"
+      end
+
+      local obj = {}
+      setmetatable(obj, pets.Dog)
+      obj._sound = barkSound
+      return obj
+    end
+
+    function pets.Dog.bark(self)
+      io.write(self._sound.."\n")
+    end 
+
+    function pets.Dog.setBark(self, new_sound)
+      self._sound = new_sound
+    end
+
+    return pets
+    ```
+    ```lua
+    --- working.lua
+    pets = require "pets"
+
+    Dog = pets.Dog
+
+    rover = Dog.new()
+    fifi = Dog.new("Yip! Yip! Yip!")
+    bruiser = Dog.new()
+    bruiser:setBark("RRRRRROWF!!")
+
+    io.write("Rover barks: ")
+    rover:bark()
+    ```
+  - In regard to operator overload. You can't normally do arithmetic with TABLE OBJECTS. But you can overload the '+' and '-' operators, as a table function, to do arithmetic on other table functions.
+## 2024-01-31
+  ### Missed class h/
 ## 2024-01-29
   [checklua.lua](https://github.com/sowens23/CS-F331/blob/main/inclass/check_lua.lua)
   ### Review
