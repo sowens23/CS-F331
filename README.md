@@ -37,6 +37,122 @@
   | [Week-13](#Week-13) | | |
   | [Week-14](#Week-14) | | |
 
+# Week-4
+[Top](#TOP)
+## 2024-02-07
+  ### The Basics of Lexical Analysis
+  - Consider a stream of characters, and the role a Lexer and a Parser play.
+    - The Lexer is the first process that the character stream goes through, it's output is a Lexeme Stream.
+    - Then the Parser takes in the Lexeme Stream and it's output is an **Abstract syntax tree** or Error.
+  - These two phases are **Lexical Analysis (lexing)** and **Syntax Analysis (parsing)** 
+    ![lexer-parser](https://github.com/sowens23/CS-F331/blob/main/images/lexer-parser.png)
+  ### State-Machine Lexing
+## 2024-02-05
+  ### Review
+  - A closure is a function that carries with it a reference t or copy of the environment in which it was created.
+  ### Lua: Advanced Flow
+  - A **coroutine** is a function that can temporarily give up control (**yield**) at any point and then later be **resumed**.
+    - Each time a coroutine temporarily gives up control, it may pass one or more values back to it's caller.
+    - An example of this, is a loop from the caller running calculations, then running a coroutine to use the callers values. The coroutine also runs a loop, and yields itself to send back a value, then both the caller and the coroutine will send data back and forth, resuming each state where it was left off, continuing calculations on a persistent value.
+  - In Lua, a *coroutine* contains two functions
+    - coroutine.yield
+      - A coroutine yields, sending values back to caller, which then can be *resumed*. It only, actually returns when it's finished, which then can no longer be *resumed*
+      - We know coroutine is finished when it ... something *nil*
+    - coroutine.wrap
+      - The caller in Lua does not call a coroutine directly. Instead it uses coroutine.wrap to pass a coroutine function to coroutine.wrap. The return value is a **coroutine wrapper function**; call this to call/resume the coroutine. The *first* time the wrapper function is called it's arguments are passed to the coroutine function.
+  - [Lua Fibo CoRoutine]()
+      ```lua
+      -- working.lua
+
+      -- We want to calculate a user defined number of fibo numbers from 0, to x.
+      -- Well do this in steps
+      -- 1) Write a function that prints that sequence of values
+      -- 2) Then update the code, to operate with a coroutine
+
+      -- limit is the input value
+      function small_fibosl(limit)
+        local currfib, nextfib = 0, 1
+        while currfib <= limit do
+          -- Here we will return currfib
+          coroutine.yield(currfib)
+          currfib, nextfib = nextfib, currfib + nextfib
+        end
+      end
+
+      max_fibo = 3000
+
+      cw = coroutine.wrap(small_fibo)
+
+      io.write("Small fibos (coroutine):\n")
+      f = cw(max_fibo)
+
+      while f ~= nil do
+        io.write(f.."  ")
+        f = cw()
+      end
+
+      io.write("\n")
+
+      ```
+    - A Lua **iterator** is a function that is called repeatedly. We can do this by defining a function.
+      ```lua
+      function MYFUNCTION(...)
+        local ... -- iter_func is a closer, so we can create variables here to store info between calls to iter_func, if we need to
+        local function iter_func()
+          if ... then
+            return nil -- Iterator exhausted
+          end
+          ...
+          return ... -- Return next value (s)
+        end
+        return iter_func
+      end
+
+      -- Then we can call the iterator function here
+      for k in MYFUNCTION(...) do
+        -- Iterator stuff
+        -- This loop will continue until the function returns nil 
+      end
+      ```
+    - Lua Iterator Fibo
+      ```lua
+      function small_fibos2(limit)
+        local currfib, nextfib = 0, 1
+        function iter_func()
+          if currfib > limit then
+            return nil
+          end
+          local save_curr = currfib
+          currfib, nextfib = nextfib, currfib + nextfib
+          return save_curr
+        end
+
+        return iter_func
+      end
+
+      -- now we have to make a loop that runs through the iterator
+      max_fibo = 3000
+      io.write("Smal fibos (iterator):\n")
+      for f in small_fibo2(max_fibo) do
+        io.write(f.."  ")
+      end 
+      io.write("\n")
+      
+      ```
+    - Glenn Chappel, 2024 "If someone pointed a gun at me and said, write embedded software for a pacemaker or I'll blow your head off, I'd write it in C"
+  ### Unit Overview - Lexing & Parsing
+    - Our third unit: **Lexing & Parsing** topics: Introduction to lexing & parsing, the basics of lexical analysis, State-machine lexing, the basics of syntax analysis, recursie-descent parsing, shift-reduce parsing, parsing wrap-up
+  ### Intro to Lexing & Parsing
+    - Here are some things a compiler needs to do:
+      1. **Determine whether the iven program is syntactically correct, and, if so, find it's structure.**
+      2. Determine all identifiers and what they refer to.
+      3. If compiling code in a statically typed PL, determine types and check that no typing rules are broken.
+      4. Generate code in the target language.
+    - **Parsing**: Determining whether input is syntactically correct, and, if so, finding it's structure.
+    - Software that does parsing is called a **parser**.
+    - A parser outputs most commonly an **abstract syntax tree (AST)**. This tree usually leaves out things like punctuation, which only serve to guide the parser, or human readers.
+    - A preprocessing step is often split off from parsing: **lexical analysis** or **lexing** where input is split into **lexemes** (words, roughly), and the category of each is determined. Things like whitespace and comments are usually skipped.
+
 # Week-3
 [Top](#TOP)
 ## 2024-02-02
