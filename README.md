@@ -46,6 +46,35 @@
     - Then the Parser takes in the Lexeme Stream and it's output is an **Abstract syntax tree** or Error.
   - These two phases are **Lexical Analysis (lexing)** and **Syntax Analysis (parsing)** 
     ![lexer-parser](https://github.com/sowens23/CS-F331/blob/main/images/lexer-parser.png)
+  - **Lexemes** are usually classified by category
+  - An **idenfifier** is a name that a program gives to some entity like "class **MyClass**"
+  - A **keyword** is an identifier-looking lexeme that has special meaning "**class** MyClass"
+  - An **operator** is a wn alternate method for making something like a function call "int a **+=** b"
+  - The **arity** of an operator is the number of characters the operator uses
+    - **unary** operator " **+** "
+    - **binary** operator " **+= "
+      - A binary operator placed between its operands is an **infix** operator
+    - A **ternary** operator has three operands. They are uncommon. None in Lua, but in C++ "**... ? ... : ...**"
+  - A **literal** is a representation of a fixed value in source code.
+    - **C++ Literals**
+      | Literal | Type |
+      |---|---|
+      | 42 | int |
+      | 42.5 | double |
+    - **Lua Literals**
+      | Literal | Type |
+      |---|---|
+      | 42.5 | number |
+      | false | boolean |
+  - **Punctuation** is the category for the extra lexemes in a program that do not fit into any of the previously defined categories. In C++, these are " {} ", " ; ". or " : ".
+  - Lexeme categories listed above
+    - **Identifier**
+    - **Keyword**
+    - **Operator**
+    - **Literal**
+    - **Punctuation**
+  - A **Reserved Word** is a word that has the general form of an identifier, but is not allowed as an identifier.
+  - 
   ### State-Machine Lexing
 ## 2024-02-05
   ### Review
