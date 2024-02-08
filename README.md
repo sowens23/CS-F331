@@ -74,8 +74,27 @@
     - **Literal**
     - **Punctuation**
   - A **Reserved Word** is a word that has the general form of an identifier, but is not allowed as an identifier.
-  - 
+  - A lexer outputs a sequece of lexemes
   ### State-Machine Lexing
+  - The **Maximal Munch** rule says that a lexeme is always the longest substring beginning from it's starting point that can be interpreted as a lexeme.
+  - Internally (Inclass), the written lexer will operate as a **state machine**.
+    - A state machine has a current **state**. This might simply be a number. Code that runs as a state machine will need to store this.
+    - The machine proceeds in a series of steps. At each step, it looks at the current item (here, character) in the input and the current state. It then decides what state to go to next.
+    - Based on the state and current character, our state machine may also make other decisions.
+  - There are variables (operations)  
+    1. Input is the given string: *program*
+    2. The index of the next character to read is stored in variable *pos* which starts at 1 in Lua.
+    3. The state is stored in variable *state*, initialized as *START**
+    4. We build a lexeme in string *lexstr*, initialized as empty ("")
+    5. The category of a complete lexeme is stored in *category*
+  - When a complete lexeme has been found, set *state* to *DONE*, and set *category* appropriately.
+  - Let's write a lexer [lexer.lua](https://github.com/sowens23/CS-F331/blob/main/inclass/lexer.lua)
+  - Utility Functions (Exception parameters)
+    - To add the current character to the lexeme, call *add1()*
+    - To skip the current character without adding it, call *drop1()*
+    - Lua has no character type. We represent a character as a string of length one. We can test to see if something is a valid character by using functions like (*isLetter()*, *isDigit()*, *isWhitespace()*, *isIllegal()*). Each takes a string. When given a string whose length is not exactly one, each returns false.
+  - It might be easiest to classify all lexemes as keywords, then go through once all lexemes have been processed and pick out the identifiers.
+  - 
 ## 2024-02-05
   ### Review
   - A closure is a function that carries with it a reference t or copy of the environment in which it was created.
@@ -89,7 +108,7 @@
       - We know coroutine is finished when it ... something *nil*
     - coroutine.wrap
       - The caller in Lua does not call a coroutine directly. Instead it uses coroutine.wrap to pass a coroutine function to coroutine.wrap. The return value is a **coroutine wrapper function**; call this to call/resume the coroutine. The *first* time the wrapper function is called it's arguments are passed to the coroutine function.
-  - [Lua Fibo CoRoutine]()
+  - [Lua Fibo CoRoutine](https://github.com/sowens23/CS-F331/blob/main/inclass/)
       ```lua
       -- working.lua
 
