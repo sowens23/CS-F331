@@ -37,8 +37,39 @@
   | [Week-13](#Week-13) | | |
   | [Week-14](#Week-14) | | |
 
+# Week-5
+[Top](#TOP)
+## 2024-02-12
+  ### Review
+  - When we write a state machine, when do we add a new state? **Two situations can be handlded by the same state if they should react identically to all future input**
+  ### State-Machine Lexing (cont'd)
+  - When there are lexeme situations that are tricky to handle, the best way to deal with it is to **Lookahead**, not **Backtracking**
+  - When dealing with errors in functions, there are three places we can deal with them. **Before, During, or After**
+    - We don't want to handle errors **before the function** because this would require a preprocessing step before the lexer, that's inconvenient.
+    - We don't want to handle errors **during the function**, this can only happen if our lexer 'fixes' illegal characters by changing, or skipping them. This would change the definition of a syntactically correct program
+    - **After is good**?
+  ### The Basics of Syntax Analysis
+  - A parser will read in the lexeme stream from the lexer. A Parser will do the following
+    - Determine if the input is syntactically correct.
+    - If it is not correct, then output info about issue
+    - If correct, output some representation of it's structure, typically as an **abstract syntax tree**
+  - Parsing methods can vary a great deal, but they usually come in two forms: **top-down** and **bottom-up**.
+    - Top-down: Goes through the derivation from top to bottom, beginning with start symbol, **expanding** nonterminals as it goes, and ending with the string to be derived.
+      - Usually expand the leftmost nonterminal first, usually producing leftmost derivations.
+    - Bottom-up: Goes through the derivation from bottom to top, beginning with string to be derived **reducing** substrings to nonterminals as it goes, and ending with the start symbol.
+      - 
+  - **LL Parsers** handle input in a left-to-right order, thus top-down parsers, they go through the steps to generte a Leftmost derivation. They are LL parsers. **Predictive Recursive Descent** lies in the LL category as well.
+  - **LR Parsers** handle input in a left-to-right order, but make irrevocable decisions at each step and generate Rightmost derivations. These are bottom-up parsers. There exists **Shift-Reduce** parsing methods similar to this. 
+  ### Recursive-Descent Parsing
+  - A Recursive-Descent parser consists of a number of **parsing functions**. There is one parsing function for each nonterminal.
+  - Let's look at [rdparser1.lua]() & [use_rdparser1.lua]()
+  - 
 # Week-4
 [Top](#TOP)
+## 2024-02-09
+  ### State-Machine Lexing (cont'd)
+  - A guiding principle to writing a new state machine: **_Two situations can be handled by the same state if they should react identically to all future input._**
+  
 ## 2024-02-07
   ### The Basics of Lexical Analysis
   - Consider a stream of characters, and the role a Lexer and a Parser play.
