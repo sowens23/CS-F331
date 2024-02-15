@@ -39,6 +39,47 @@
 
 # Week-5
 [Top](#TOP)
+## 2024-02-15
+  ### Thoughts on Assignment 3
+  - The Lexer, Parser and Interpreter will be used for a language called **Nilgai** which was invented by Dr. Chappell for CS331
+  - **Legal** characters are whitespace & printable ASCII
+  - 7 lexeme categories
+    1. Keywords
+      - and, char, def, else, elseif, eol, false, if, inputnum, not, or, output, rand, return, true, while
+      - and, or, not are operators
+      - false and true are boolean literals
+    2. Identifiers
+      - Identifiers cannot be Keyword lexeme.
+    3. NumericLiteral
+      - is a sequence of digits, optional to be followed with an "e" / "E" + "+" digit.
+      - No dots, and exponents cannot contain "-" a hyphen
+      ex. "111" "7e31" "37E+1"
+    4. StringLiteral
+      - Any sequence of ASCII literals and whitespace
+    5. Operator
+      - 14 Operators: == != < <= > >= + - * / % [ ] =
+    6. Punctuation
+      - Any single character that is not whitespace, not part of comment, and not part of a lexeme in any of the other categories.
+    7. Malformed
+      - Bad character: A single illegal character that is not part of a comment or StringLiteral
+      - Bad string: Something that would be a StringLiteral but there is a newlne or the input ends before the ending quote appears.
+        - To check for bad string, you will need to check for the end of the input. This is done by checking the current character is the empty string.
+  ### Review
+  - All grammar based parsers go through the steps required to parse.
+  - **Top-Down** Parsers
+    - Derivation top to bottom, **expanding** nonterminals.
+    - Category are: **LL parsers** read input left to right, steps produce Leftmost derivation.
+    - Method we look at: **Predictive Recursive Descent**
+  - **Bottom-Up** Parsers
+    - Derviation from bottom to top, **reducing** substrings to nonterminals
+    - Category are: **LR parsers** Left to right, steps produce Rightmost derivation.
+    - Method we check: **Shift-Reduce**
+  - All LL(1) grammar is an LR(1) grammar. Not all LR(1) grammar is LL(1) grammar
+  ### Recursive-Descent Parsing (cont'd)
+  - Remember that [brackets represent optional (0 or 1) things] These are conditionals (ifs)
+  - { Braces} represent repeatable, 0 or more items become a loop (while)
+  
+
 ## 2024-02-12
   ### Review
   - When we write a state machine, when do we add a new state? **Two situations can be handlded by the same state if they should react identically to all future input**
@@ -63,7 +104,7 @@
   ### Recursive-Descent Parsing
   - A Recursive-Descent parser consists of a number of **parsing functions**. There is one parsing function for each nonterminal.
   - Let's look at [rdparser1.lua]() & [use_rdparser1.lua]()
-  - 
+
 # Week-4
 [Top](#TOP)
 ## 2024-02-09
@@ -125,7 +166,7 @@
     - To skip the current character without adding it, call *drop1()*
     - Lua has no character type. We represent a character as a string of length one. We can test to see if something is a valid character by using functions like (*isLetter()*, *isDigit()*, *isWhitespace()*, *isIllegal()*). Each takes a string. When given a string whose length is not exactly one, each returns false.
   - It might be easiest to classify all lexemes as keywords, then go through once all lexemes have been processed and pick out the identifiers.
-  - 
+  
 ## 2024-02-05
   ### Review
   - A closure is a function that carries with it a reference t or copy of the environment in which it was created.
@@ -293,8 +334,10 @@
     rover:bark()
     ```
   - In regard to operator overload. You can't normally do arithmetic with TABLE OBJECTS. But you can overload the '+' and '-' operators, as a table function, to do arithmetic on other table functions.
+  
 ## 2024-01-31
   ### Missed class h/
+
 ## 2024-01-29
   [checklua.lua](https://github.com/sowens23/CS-F331/blob/main/inclass/check_lua.lua)
   ### Review
