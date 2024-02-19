@@ -1,10 +1,9 @@
 -- lexit.lua
 -- Spencer Baysinger
 -- Started: 2024-02-17
---
+-- Forth Secret Code: I am one with the Forth. The Forth is with me.
 -- For CS 331 Spring 2024
 
--- Based on Glenn Chappel's vers. 1-3 lexer.lua
 -- History:
 -- - v1:
 --   - Framework written. Lexer treats every character as punctuation.
@@ -14,6 +13,12 @@
 -- - v3
 --   - Finished (hopefully). Add states DIGIT, DIGDOT, DOT, PLUS, MINUS,
 --     STAR. Comment each state-handler function. Check for MAL lexeme.
+-- - v4
+--   - Ownership taken over by Spencer Baysinger
+--   - Program edited to Assignment 3 and PL Nilgai specifications
+--      - Patched Keywords, Star, NUMLIT
+--      - Added Keywords, String Literal, Operators
+--      - All tests in lexit_test.lua are successful
 
 -- Usage:
 --
@@ -24,19 +29,15 @@
 --        -- It can be used as an index for array lexer.catnames.
 --    end
 
-
 -- *********************************************************************
 -- Module Table Initialization
 -- *********************************************************************
 
-
 local lexit = {}  -- Our module; members are added below
-
 
 -- *********************************************************************
 -- Public Constants
 -- *********************************************************************
-
 
 -- Numeric constants representing lexeme categories
 lexit.KEY       = 1
@@ -55,7 +56,6 @@ lexit.PUNCT     = 6
     -- ex: ; { } ( ) , & $
 lexit.MAL       = 7
 
-
 -- catnames
 -- Array of names of lexeme categories.
 -- Human-readable strings. Indices are above numeric constants.
@@ -69,14 +69,12 @@ lexit.catnames = {
     "Malformed"
 }
 
-
 -- *********************************************************************
 -- Kind-of-Character Functions
 -- *********************************************************************
 
 -- All functions return false when given a string whose length is not
 -- exactly 1.
-
 
 -- isLetter
 -- Returns true if string c is a letter character, false otherwise.
@@ -92,7 +90,6 @@ local function isLetter(c)
     end
 end
 
-
 -- isDigit
 -- Returns true if string c is a digit character, false otherwise.
 local function isDigit(c)
@@ -104,7 +101,6 @@ local function isDigit(c)
         return false
     end
 end
-
 
 -- isWhitespace
 -- Returns true if string c is a whitespace character, false otherwise.
@@ -119,7 +115,6 @@ local function isWhitespace(c)
     end
 end
 
-
 -- isPrintableASCII
 -- Returns true if string c is a printable ASCII character (codes 32 " "
 -- through 126 "~"), false otherwise.
@@ -132,7 +127,6 @@ local function isPrintableASCII(c)
         return false
     end
 end
-
 
 -- isIllegal
 -- Returns true if string c is an illegal character, false otherwise.
@@ -148,11 +142,9 @@ local function isIllegal(c)
     end
 end
 
-
 -- *********************************************************************
 -- The lexer
 -- *********************************************************************
-
 
 -- lex
 -- Our lexer
@@ -162,7 +154,6 @@ end
 -- representing a lexeme category. (See Public Constants.)
 function lexit.lex(program)
     -- ***** Variables (like class data members) *****
-
     local pos       -- Index of next character in program
                     -- INVARIANT: when getLexeme is called, pos is
                     --  EITHER the index of the first character of the
@@ -174,7 +165,6 @@ function lexit.lex(program)
     local handlers  -- Dispatch table; value created later
 
     -- ***** States *****
-
     local DONE              = 0
     local START             = 1
     local LETTER            = 2
@@ -196,7 +186,6 @@ function lexit.lex(program)
     local SQUAREBRACKETOPEN = 18
 
     -- ***** Character-Related Utility Functions *****
-
     -- currChar
     -- Return the current character, at index pos in program. Return
     -- value is a single-character string, or the empty string if pos is
@@ -266,10 +255,7 @@ function lexit.lex(program)
     end
 
     -- ***** State-Handler Functions *****
-
-    -- A function with a name like handle_XYZ is the handler function
-    -- for state XYZ
-
+    -- A function with a name like handle_XYZ is the handler function for state XYZ
     -- State START: no character read yet.
     local function handle_START()
         -- State Malformed
@@ -319,6 +305,7 @@ function lexit.lex(program)
             state = GREATERTHANEQUAL
 
         -- Single Character Operators
+
         -- State Operator +
         elseif ch == "+" then
             add1()
@@ -413,25 +400,6 @@ function lexit.lex(program)
         end
     end
 
-    -- Operator State PLUS: we have seen a plus ("+") and nothing else.
-    local function handle_PLUS()
-        state = DONE
-        category = lexit.OP
-    end
-
-    -- Operator State MINUS: we have seen a minus ("-") and nothing else.
-    local function handle_MINUS()
-        state = DONE
-        category = lexit.OP
-    end
-
-    -- Operator State STAR: we have seen a star ("*"), slash ("/"), or equal
-    -- ("=") and nothing else.
-    local function handle_STAR()  -- Handle * or / or =
-        state = DONE
-        category = lexit.OP
-    end
-
     -- State String Literal SQUOTE: we have seen a single quote (')
     local function handle_SQUOTE()  -- Handle '
         if ch ~= "'" and ch ~= "" and ch ~= "\n" then
@@ -462,54 +430,63 @@ function lexit.lex(program)
         end
     end
 
+
+    -- Operator State PLUS: we have seen a plus ("+") and nothing else.
+    local function handle_PLUS()
+        state = DONE
+        category = lexit.OP
+    end
+    -- Operator State MINUS: we have seen a minus ("-") and nothing else.
+    local function handle_MINUS()
+        state = DONE
+        category = lexit.OP
+    end
+    -- Operator State STAR: we have seen a star ("*"), slash ("/"), or equal
+    -- ("=") and nothing else.
+    local function handle_STAR()  -- Handle * or / or =
+        state = DONE
+        category = lexit.OP
+    end
     -- Operator State EQUAL : we have seen a =
     local function handle_EQUAL()
         state = DONE
         category = lexit.OP
     end
-
     -- Operator State NOTEQUAL : we have seen a !=
     local function handle_NOTEQUAL()
         state = DONE
         category = lexit.OP
     end
-
     -- Operator State DOUBLEEQUAL : we have seen a ==
     local function handle_DOUBLEEQUAL()
         state = DONE
         category = lexit.OP
     end
-
     -- Operator State LESSTHAN: we have seen a <
     local function handle_LESSTHAN()
         state = DONE
         category = lexit.OP
     end
-
     -- Operator State LESSTHANEQUAL: we have seen a <=
     local function handle_LESSTHANEQUAL()
         state = DONE
         category = lexit.OP
     end
-
     -- Operator State GREATERTHANEQUAL: we have seen a >=
     local function handle_GREATERTHANEQUAL()
         state = DONE
         category = lexit.OP
     end
-
     -- Operator State GREATERTHAN: we have seen a >
     local function handle_GREATERTHAN()
         state = DONE
         category = lexit.OP
     end
-
     -- Operator State MODULO: we have seen a %
     local function handle_MODULO()
         state = DONE
         category = lexit.OP
     end
-
     -- Operator State SQUAREBRACKETOPEN: we have seen a [
     local function handle_SQUAREBRACKETOPEN()
         state = DONE
@@ -522,7 +499,6 @@ function lexit.lex(program)
     end
 
     -- ***** Table of State-Handler Functions *****
-
     handlers = {
         [DONE]=handle_DONE,
         [START]=handle_START,
@@ -574,11 +550,9 @@ function lexit.lex(program)
     return getLexeme
 end
 
-
 -- *********************************************************************
 -- Module Table Return
 -- *********************************************************************
-
 
 return lexit
 
