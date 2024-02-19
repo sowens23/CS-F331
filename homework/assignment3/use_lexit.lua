@@ -7,7 +7,7 @@
 -- Simple Main Program for lexit Module
 -- Requires lexit.lua
 
-lexit = require "lexit"
+lexit = require "lexer"
 
 
 -- Our "program", which is sent to the lexer

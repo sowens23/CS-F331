@@ -41,10 +41,18 @@ local lexer = {}  -- Our module; members are added below
 
 -- Numeric constants representing lexeme categories
 lexer.KEY    = 1
+    -- 16 Keywords: {"and", "char", "def", "else", "elseif", "eol", "false", "if", "inputnum", "not", "or", "output", "rand", "return", "true", "while"}
+    -- Finished Keywords: 
 lexer.ID     = 2
 lexer.NUMLIT = 3
+    -- Any sequence of digits: {1, 123, 1444422}
+    -- Along with exponent: {7e34, 34567E+1, 9876e0}
 lexer.OP     = 4
+    -- 14 Operators: {"==", "!=", "<", "<=", ">", ">=", "+", "-", "*", "/", "%", "[", "]", "="}
+    -- Finished Operators: 
 lexer.PUNCT  = 5
+    -- Any single character that is not whitespace, part of a comment, and not part of a lexem in any of the other categories
+    -- ex: ; { } ( ) , & $
 lexer.MAL    = 6
 
 
