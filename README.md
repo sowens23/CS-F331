@@ -39,7 +39,51 @@
 
 # Week-5
 [Top](#TOP)
-## 2024-02-15
+## 2024-02-18
+  ### Review
+  - Top-Down Parsers
+    - Go through derivation top to bottom, expanding nonterminals.
+    - Sometimes hand-coded and sometimes automatically generated.
+    - Method we look at: Predictive Recursive Descent.
+  - Bottom-Up Parsers
+    - Go through the derivation bottom to top, reducing substrings to nonterminals.
+    - Almost always automatically generated.
+    - Method we look at: Shift-Reduce.
+  - **Recursive Descent** is a top-down parsing method
+    - **Predictive** = no backtracking. Predictive Recursive-Descent parsers that base decisions on _k_ lexemes use LL(k) grammars.
+    - There is one parsing function for **each** non-terminal.
+  - An **Abstract Syntax Tree** is usually the result output of a parser. This represents a series of operations.
+    - There is no universal specification for an AST.
+  ### Shift-Reduce Parsing
+  - A **Shift-Reduce** parsing method is a bottom-up parsing method
+    - It is usually automatically generated.
+    - It was introduced by [D. Knuth 1965], and was not practical then. But now it is widely used.
+    - The CFG's that a Shift-Reduce parser can handle are called **LR(k) grammars**. Lookahead is uncommon here.
+    - LR(1) grammars are the larger category.
+  - A **Shift-Reduce automaton** is a state machine with an associated stack. 
+    - It is always based on a grammar, with respective states, each numbered.
+    - Each stack item holds both a symbol from the grammar - either terminal or nonterminal - and a slate(number). The _current state_ is the state in the top stack item.
+    - A Shift-Reduce automaton runs in a series of steps, each step performs one of the following actions;
+      1. **Shift** - Shift the next input symbol onto the stack (push)
+      2. **Reduce** Apply a production in reverse, reducing symbols on the stack to a single nonterminal, which replaces them on the stack
+      3. **Accept** Done, successful 
+      4. **Error** Done, unsuccessful
+    - Operations of the automaton uses a **parsing table** in two parts
+      1. The **action table** has a row for each state, column for each terminal
+      2. The **goto table** has a row for each state and a column for each nonterminal.
+
+## 2024-02-16
+  ### Review
+  - **Recursive Descent** is a top-down parsing method
+  - **Predictive** = No backtracking.
+    - There is one parsing function for each nonterminal.
+  ### Recursive-Descent Parsing (cont'd)
+  - Let's consider an example of proper (Ba) and improper (B) LL(1) grammar
+    - **Not LL(1)** xx -> xx "+" "b" | "a"
+    - **LL(1)** xx -> "a" yy
+                yy -> "+" "b" yy | ""
+
+## 2024-02-14
   ### Thoughts on Assignment 3
   - The Lexer, Parser and Interpreter will be used for a language called **Nilgai** which was invented by Dr. Chappell for CS331
   - **Legal** characters are whitespace & printable ASCII
@@ -98,7 +142,6 @@
     - Top-down: Goes through the derivation from top to bottom, beginning with start symbol, **expanding** nonterminals as it goes, and ending with the string to be derived.
       - Usually expand the leftmost nonterminal first, usually producing leftmost derivations.
     - Bottom-up: Goes through the derivation from bottom to top, beginning with string to be derived **reducing** substrings to nonterminals as it goes, and ending with the start symbol.
-      - 
   - **LL Parsers** handle input in a left-to-right order, thus top-down parsers, they go through the steps to generte a Leftmost derivation. They are LL parsers. **Predictive Recursive Descent** lies in the LL category as well.
   - **LR Parsers** handle input in a left-to-right order, but make irrevocable decisions at each step and generate Rightmost derivations. These are bottom-up parsers. There exists **Shift-Reduce** parsing methods similar to this. 
   ### Recursive-Descent Parsing
