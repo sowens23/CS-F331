@@ -39,7 +39,54 @@
 
 # Week-5
 [Top](#TOP)
-## 2024-02-18
+## 2024-02-21
+  ### Parsing Wrap-up
+  - When we analyze algorithms, we need to be clear on three things
+    1. How we measure the size of the input (n)
+    2. What operations are allowed.
+    3. What operations we count (the **basic operations**)
+  - Practical lexers and parsers run in **linear time**.
+  - In the late 1960's and 70's, parsing methods were found that can handle all CFLs
+    - Earley Parser [J. Earley 1968], CYK Parser [J. Cocke & J.T. Schwartz 1970, T. Kasami 1965, D.H. Younger 1967], and Generalized LR (gLR) Parser [B. Lang 1974, M. Tomita 1984]
+    - All of the above model have a worst-case time of n^3 for an arbitrary CFL.
+  - The syntax of Lua is specified with a CFG. The standard Lua implementation uses a hand-coded Recursive-Descent parser.
+    - This parser does not costruct an AST. It emits bytecode directly, thus it's basically a compiler. This is called a **Shotgun Parser**
+  - **Parsing Expression Grammar (PEG)** is an alternative to CFG. Using PEG you will use the _first_ production that works for grammar. So there is never more than one parse tree. PEGs have no issues with ambiguity.
+  - The syntax of the Python PL is currently specified with a PEG. The primary implementation, **CPython**, uses a Recursive-Descent parser that is generated automatically from this PEG.
+  - Parsing is making sense of input. This is an extremely common task that is in fact pretty important.
+   ### Thoughts on Assignment 4
+  - Turn in your Lexer with your Parser
+  - This will create a Lexer and Parser for a language Dr. Chappell invented called **Nilgai**.
+  - There will be 23 grammar states.
+  - Remember to declare all variables at the beginning of your function using **local**.
+  - **parseit.lua** parseit module will return two values: Boolean & AST.
+    1. If bool is true, return AST in proper form
+    2. If bool is false, return nil.
+  - If you have a funciton that does something, and you need to do that thing, use the function. Don't write the same function twice.
+  - Three files to help you: _parseit.lua_, _rdparser3.lua_, *use_parseit.lua*.
+  ### PL Feature: Type System
+  - An **Extensible** programming language is one that allows the programmer to define new types.
+    - In c++ this is a class
+  - **Type Checking** means checking & enforcing the restrictions associated with a type system.
+  - The various actions involved with a type system (determining types, type checking) are collectively known as **typing**
+  - Types are used in three ways  
+    1. Which values an entity may take on
+    2. Which operations are legal
+    3. Which of multiple possible operations to perform.
+  - We classify type systems along three axes.  
+    1. Overall type system: **static** or **dynamic**
+    2. How types are specified: **manifest** or **implicit**
+    3. How types are checked: **nominal** or **structural**
+    - We could also consider **Type Safety**
+  - The following table shows various PL type systems
+    |  | Type Specification |  |  |
+    | -- | -- | -- | -- |
+    |  |  | Mostly Manifest | Mostly Implicit |
+    | Overal Type System | Static | C, C++, Java | Haskell, OCaml |
+    |  | Dynamic | Not much goes on here | Python, Lua, Ruby, JavaScript, Scheme |
+  - 
+  
+## 2024-02-19
   ### Review
   - Top-Down Parsers
     - Go through derivation top to bottom, expanding nonterminals.
