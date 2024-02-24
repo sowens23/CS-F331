@@ -39,6 +39,45 @@
 
 # Week-5
 [Top](#TOP)
+## 2024-02-23
+  ### Review
+  - Practical lexers and parsers run in linear time
+  - A **Generalized LR (GLR)** parser runs something like a Shift-Reduce automaton. It allows multiple actions for a single state-input combination, and tries them all.
+    - GLR's can handle all CFLs. It is cubic-time for many grammars, however, it does run fast for some, and slow for others.
+  - **Parsing is making sense of input**
+  - Things we are concerned about regarding PL's: Type, Static typing, Manifest typing vs. implicit typing, Type annotation, Type inference, First-class functions, Sound type system.
+  - A PL or PL construct is **type-safe** if it forbids operations that are incorrect for the types on which they operate.
+    - Avoid using **strong and weak** terms when speaking about typing.
+  ### PL Category: Functional PL
+  - **Imperative programming** is writing code to tell a computer what to do. This is typical. Examples; C++, java, lua
+  - **Declarative programming** is more along the lines of telling a computer what is true, and can be thought of in terms of asking a question.
+  - There is also **Logic programming** which we will cover later.
+  - A function has a **side effect**, consider a const function returning a value, and a non-const function that may have a side effect. The term is used loosely to mean that it changes something.
+  - A typical functional programming language will;
+    1. Have first-class functions
+    2. Offers good support for *higher-order functions*
+    3. Has a preference for _immutable_ data
+  - A **pure** functional PL goes farther, and does not support mutable data at all. There are no side effects.
+  ### Introduction to Haskell
+  #### History
+  - The initial release of Haskell, named after **Haskell B. Curry (1900-82)**, was released in 1990.
+  - It's purpose was to standardize the scientific functional programming community.
+  - In 1998 Haskell 98 was released with two primary implementations;
+    1. The **Haskell User's Gofer System (Hugs)**, a lightweight interactive environment.
+    2. And the **Glorious Glasgow Haskell Compilation System**, aka the **Glasgow Haskell Compiler (GHC)**, a full-featured compiler. 
+    - Both were eventually folded into **GHC** and was renamed to **Glasgow Haskell Compiler Interactive (GHCi)**
+  - A second standard was released in 2010, called **Haskell 2010** aka **Haskell Prime**
+  #### Characteristics
+  - Haskell is a *pure* functional PL. It has first-class functions and excellent support for higher-order functions.
+  - It has simple syntax with more or less equivalent function calls than c++, lua, and haskell.
+    ```
+    foo(a, b, c); // C++
+    foo(a, b, c)  -- Lua
+    foo a b c     -- Haskell
+    ```
+  - Haskell has no loops. Instead of iteration, it solely uses recursion.
+  - By default Haskell does **lazy evaluation** only evaluating expressions and functions when literally used.
+  
 ## 2024-02-21
   ### Parsing Wrap-up
   - When we analyze algorithms, we need to be clear on three things
