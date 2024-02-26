@@ -11,7 +11,7 @@
 -- For grammar & AST specification, see the Assignment 4 description.
 
 
-local lexit = require "lexit"
+local lexer = require "lexit"
 
 
 -- *********************************************************************
