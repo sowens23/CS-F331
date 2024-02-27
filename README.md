@@ -37,7 +37,78 @@
   | [Week-13](#Week-13) | | |
   | [Week-14](#Week-14) | | |
 
-# Week-5
+# Week-7
+[Top](#TOP)
+## 2024-02-26
+  ### Review
+  - Haskel has **Significant Indentation**. This signifies start and end of code blocks
+  ### Haskell: Functions
+  - Comments can be made with " -- ", and multi-line comments with " {- ... -} "
+  - **Normal Identifiers** begin with a lower-case letter. These name variables and functions
+  - **Special Identifiers** begin with an upper-case letter. These name modules, types, and constructors.
+  - A function is **applied** to it's arguments; this is called **function application**
+  - You can make special operators using any of the 20 operator values.
+  - **Currying** is simulating a multiple-argument function using a single-argument function that returns a function.
+    ```
+    addem a b = a + b
+    add2 = addem 2
+    add2 3 -- returns 5    
+    ```
+  - A **Lambda function** is a kind of expression whose value is a function. A funtion with no name
+    ```
+    square x = x*x
+    square' = \ x -> x*x -- Lambda function
+    ```
+  ### Haskell: Lists
+  - Haskel **Lists** can hold an arbitrarily large number of data items of the same type
+    - [] -- Empty list, [2,3,5] -- List of 3 ints
+    - ["hello"] -- 1 String list -- [1, [2,3]] -- Error diff types
+  - Because of lazy evaluation we can make infinite lists
+    - [1, 3 ..] -- Infinite list of odd ints
+  - Haskell **Tuples** hold a fixed number of data items, possibly of different types.
+  - A **predicate** function returns a Boolean
+  - **filter** takes a predicate and a list, and returns a list of items that pass the test
+  - A **primitive** operation is a fundamental operation that other operations are constructed from. Haskell has three
+    1. [] -- Empty list
+    2. Cons: -- Construct a list given it's first item and a list of other items
+    3. Pattern matching for lists
+  - Haskell has **set comprehension** using a set-builder notation
+    - { xy | x ∈ {3, 2, 1} and y ∈ {10, 11, 12}}
+    - { x*y | x <- {3, 2, 1} and y <- {10, 11, 12}}
+      - The above will output [30, 20, 10, 33, 22, 11, 36, 24, 12]
+    ```haskell
+    -- list.hs
+    -- Spencer Baysinger
+    -- 2024/02/26
+    -- List stuff in Haskell
+    -- Run interpreter and type to load program 
+      -- :l list
+      -- :r 
+
+    -- Write a function isEmpty that determines whether a list is empty
+    isEmpty []     = True 
+    isEmpty [x:xs] = False
+
+    -- Write a function listLength that returns the length of the list 
+    listLength []       = 0
+    listLegnth [x:xs]   = 1 + listLength xs 
+
+    -- Write a function mymap that replicated Prelude function map
+    myMap f []     = []
+    myMap f (x:xs) = (f x):(myMap f xs)
+
+    -- Write a function myFilter that replicates Prelude function filter
+    isEven p
+
+    myFilter p []     = 
+    myFilter p (x:xs) = if (p x)
+                          then (x:rest)
+                          else rest where
+                        rest = myFilter p xs
+
+    ```
+
+# Week-6
 [Top](#TOP)
 ## 2024-02-23
   ### Review
@@ -125,6 +196,7 @@
     |  | Dynamic | Not much goes on here | Python, Lua, Ruby, JavaScript, Scheme |
   - 
   
+
 ## 2024-02-19
   ### Review
   - Top-Down Parsers
@@ -158,6 +230,9 @@
       1. The **action table** has a row for each state, column for each terminal
       2. The **goto table** has a row for each state and a column for each nonterminal.
 
+
+# Week-5
+[Top](#TOP)
 ## 2024-02-16
   ### Review
   - **Recursive Descent** is a top-down parsing method
