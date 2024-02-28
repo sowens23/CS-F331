@@ -1,0 +1,248 @@
+CS 331 Spring 2024
+Assignment 4
+Assignment 4 is due at 9 pm Thursday, February 29. It is worth 85 points.
+
+-- Procedures --
+This assignment is to be done individually.
+Turn in answers to the exercises below on the UA Blackboard site, under Assignment 4 for this class.
+
+• Your answers should consist of the source code for Exercise A (file parseit.lua), along with file lexit.lua from Assignment 3.
+• Turn in lexit.lua even if you have turned it in before.
+• Your homework submission may not be examined immediately. If you have questions, e-mail me.
+
+
+-- Exercises (85 pts total) --
+Exercise A — Predictive Recursive-Descent Parser in Lua
+- Purpose -
+In this exercise you will write a Lua module that does parsing for a simple programming language called Nilgai. Your parser will determine syntactic correctness; when the input is correct, the parser will output an abstract syntax tree.
+The parser will use the Predictive Recursive-Descent method. It will be built on top of the lexer from the previous assignment.
+In a later assignment, you will build an interpreter that takes an AST in the form returned by your parser and executes the code.
+
+
+- Instructions -
+Write a Lua module parseit, contained in the file parseit.lua. Your module must parse Nilgai programs using Predictive Recursive Descent.
+
+Be sure to follow the Coding Standards.
+• The interface of module parseit is very similar to that of rdparser3, which was written in class. In particular, the interface of module parseit consists of a single function parseit.parse.
+  • Function parse takes a string, holding the source code of a proposed Nilgai program.
+  • Function parse returns three values: good, done, ast.
+    • good is a boolean. It is true if parsing gave a result of syntactically correct (even if the end of the input was not reached), and false otherwise.
+    • done is a boolean. It is true if the end of the input was reached, and false otherwise.
+    • If good and done are both true, then ast is the abstract syntax tree of the Nilgai program; the format of this is discussed later. If either of good or done is false, then ast can be anything (including nil).
+  • Function parse must parse based on the grammar of the Nilgai programming language, and it must return an AST formatted as in the Nilgai specification. See Nilgai Programming Language: Syntax & AST, below.
+  • Function parse must parse using the Predictive Recursive-Descent method.
+• Module parseit must export nothing other than function parse.
+• Use module lexit, in file lexit.lua, as your lexer. This file must still meet the requirements of Assignment 3. You may fix problems with lexit.lua, but you may not add any additional functionality to it.
+
+
+- Nilgai Programming Language: Syntax & AST -
+The syntax of Nilgai is specified here, along with the format of an abstract syntax tree. The semantics of Nilgai will be covered in a later assignment.
+Introduction—Nilgai is a very small programming language. Here is an example Nilgai program.
+
+[Nilgai]
+    ```
+    # Nilgai Example #1
+    # Glenn G. Chappell
+    # 2024-02-14
+    nn = 3;
+    output(nn+4, eol);
+    ```
+
+If function parseit.parse is called, passing the source of the above program as the argument, then the return value should be the following triple.
+    ```
+    true, true, {1, {5, {19, "nn"}, {15, "3"}},
+                {3, {{13, "+"}, {19, "nn"}, {15, "4"}}, {11}}}
+    ```
+
+Above, the first true indicates that the parsing function returned syntactically correct. The second true indicates that the parser reached the end of the input. The table is the abstract syntax tree of the program. The AST may make more sense if we replace the numbers by symbolic constants (defined later), giving the following.
+    ```
+    {PROGRAM,
+    {ASSN_STMT, {SIMPLE_VAR, "nn"}, {NUMLIT_VAL, "3"}},
+    {OUTPUT_STMT, {{BIN_OP, "+"}, {SIMPLE_VAR, "nn"}, {NUMLIT_VAL, "4"}}, {EOL_OUT}}}
+    ```
+
+Here is a longer Nilgai program—previously seen on the lecture slides.
+
+[Nilgai]
+    ```
+    # fibo.ngai
+    # Glenn G. Chappell
+    # 2024-02-14
+    #
+    # For CS 331 Spring 2024
+    # Compute Fibonacci Numbers
+
+
+    # The Fibonacci number F(n), for n >= 0, is defined by F(0) = 0,
+    # F(1) = 1, and for n >= 2, F(n) = F(n-2) + F(n-1).
+
+
+    # fibo (param in variable n)
+    # Return Fibonacci number F(n).
+    def fibo()
+    {
+        currfib = 0;
+        nextfib = 1;
+        i = 0;  # Loop counter
+        while (i < n)
+        {
+            # Advance (currfib, nextfib)
+            tmp = currfib + nextfib;
+            currfib = nextfib;
+            nextfib = tmp;
+            i = i+1;
+        }
+        return currfib;
+    }
+
+
+    # Main program
+    # Print some Fibonacci numbers
+    how_many_to_print = 20;
+
+    output("Fibonacci Numbers", eol);
+
+    j = 0;  # Loop counter
+    while (j < how_many_to_print)
+    {
+        n = j;  # Set param for fibo
+        ff = fibo();
+        output("F(", j, ") = ", ff, eol);
+        j = j+1;
+    }
+    output(eol);
+    ```
+
+Lexical Structure—Lexemes are as on Assignment 3 (already completed in lexit.lua).
+
+Grammar — A grammar for Nilgai follows. Italic lower-case words are nonterminals. Roman upper-case WORDS are terminals representing lexeme categories from module lexit. A single-quoted ‘word’ in a typewriter font is a terminal that is required to be a specific string. There is no end-of-input lexeme.
+
+The start symbol is program. Lines are numbered for later reference.
+
+1.  	program	  →  	{ statement }
+2.  	statement	  →  	‘;’
+3.  	 	|  	‘output’ ‘(’ [ output_arg { ‘,’ output_arg } ] ‘)’ ‘;’
+4.  	 	|  	‘return’ expr ‘;’
+5.  	 	|  	ID ( ‘(’ ‘)’ | [ ‘[’ expr ‘]’ ] ‘=’ expr ) ‘;’
+6.  	 	|  	‘def’ ID ‘(’ ‘)’ ‘{’ program ‘}’
+7.  	 	|  	‘if’ ‘(’ expr ‘)’ ‘{’ program ‘}’ { ‘elseif’ ‘(’ expr ‘)’ ‘{’ program ‘}’ } [ ‘else’ ‘{’ program ‘}’ ]
+8.  	 	|  	‘while’ ‘(’ expr ‘)’ ‘{’ program ‘}’
+9.  	output_arg	  →  	STRLIT
+10.  	 	|  	‘eol’
+11.  	 	|  	‘char’ ‘(’ expr ‘)’
+12.  	 	|  	expr
+13.  	expr	  →  	compare_expr { ( ‘and’ | ‘or’ ) compare_expr }
+14.  	compare_expr	  →  	arith_expr { ( ‘==’ | ‘!=’ | ‘<’ | ‘<=’ | ‘>’ | ‘>=’ ) arith_expr }
+15.  	arith_expr	  →  	term { ( ‘+’ | ‘–’ ) term }
+16.  	term	  →  	factor { ( ‘*’ | ‘/’ | ‘%’ ) factor }
+17.  	factor	  →  	NUMLIT
+18.  	 	|  	‘(’ expr ‘)’
+19.  	 	|  	( ‘true’ | ‘false’ )
+20.  	 	|  	( ‘+’ | ‘-’ | ‘not’ ) factor
+21.  	 	|  	‘inputnum’ ‘(’ ‘)’
+22.  	 	|  	‘rand’ ‘(’ expr ‘)’
+23.  	 	|  	ID [ ‘(’ ‘)’ | ‘[’ expr ‘]’ ]
+
+The above grammar is already in a form that is usable by a Predictive Recursive-Descent parser; you will not need to transform it.
+Precedence & Associativity—There are 13 binary operators that may appear in an expression: and, or, ==, !=, <, <=, >, >=, binary +, binary -, *, /, %. All are left-associative. (Note that, from a lexical point of view, “and” and “or” are Keyword lexemes, not Operator lexemes; nonetheless, they function as binary operators when used in a program.)
+All other associativity, and all operator precedence, is completely encoded in the grammar.
+AST Specification—This subsection will use the following named constants—which I suggest defining in your code.
+
+[Lua]
+
+local PROGRAM      = 1
+local EMPTY_STMT   = 2
+local OUTPUT_STMT  = 3
+local RETURN_STMT  = 4
+local ASSN_STMT    = 5
+local FUNC_CALL    = 6
+local FUNC_DEF     = 7
+local IF_STMT      = 8
+local WHILE_LOOP   = 9
+local STRLIT_OUT   = 10
+local EOL_OUT      = 11
+local CHAR_CALL    = 12
+local BIN_OP       = 13
+local UN_OP        = 14
+local NUMLIT_VAL   = 15
+local BOOLLIT_VAL  = 16
+local INPUT_CALL   = 17
+local RAND_CALL    = 18
+local SIMPLE_VAR   = 19
+local ARRAY_VAR    = 20
+
+Every AST is a Lua array. We will specify the format of an AST for each of the lines in the above grammar. Lines are referred to by number.
+    1. Program. The AST for the program is an array whose first item is PROGRAM. The following items are the ASTs for the various statements, if any, in order.
+        For example, the AST for the program “tt=3; output(tt);” is {PROGRAM, {ASSN_STMT, {SIMPLE_VAR, "tt"}, {NUMLIT_VAL, "3"}},{OUTPUT_STMT, {SIMPLE_VAR, "tt"}}}.
+        If there are no statements, then the AST is {PROGRAM}.
+
+    2. Statement: Empty. The AST for the statememt is EMPTY_STMT.
+    3. Statement: Output. The AST for the statememt is an array whose first item is OUTPUT_STMT. The following items are the ASTs for the output_args, if any, in order.
+        • For example, the AST for the statement “output('abc', eol);” is {OUTPUT_STMT, {STRLIT_OUT, "'abc'"}, {EOL_OUT}}.
+        • As another example, the AST for the statement “output();” is {OUTPUT_STMT}.
+    4. Statement: Return. The AST for the statement is {RETURN_STMT, EEE}, where EEE is the AST for the expr.
+        • For example, the AST for the statement “return x;” is {RETURN_STMT, {SIMPLE_VAR, "x"}}.
+    5. Statement: Beginning with Identifier.
+        • If the ID is followed by parentheses, then the AST for the statement is {FUNC_CALL, II}, where II is the string form of the ID lexeme.
+            • For example, the AST for the statement “foo();” is {FUNC_CALL, "foo"}.
+        • (Note that a function call may also occur as part of an expression; in that case there will be no semicolon at the end. The AST of such a function call is identical. See Factor: Beginning with Identifier.)
+        • If the ID is followed by “=” without the brackets, then the AST for the statement is {ASSN_STMT, {SIMPLE_VAR, II}, EEE}, where II is the string form of the ID lexeme, and EEE is the AST for the expr.
+            • For example, the AST for the statement “nn = 3;” is {ASSN_STMT, {SIMPLE_VAR, "nn"}, {NUMLIT_VAL, "3"}}.
+        • If the ID is followed by “[”, then the AST for the statement is {ASSN_STMT, {ARRAY_VAR, II, EEE}, FFF}, where II is the string form of the ID lexeme, EEE is the AST for the expr between the brackets, FFF is the AST for the expr after the “=”.
+            • For example, the AST for the statement “aa[22] = 3;” is {ASSN_STMT, {ARRAY_VAR, "aa", {NUMLIT_VAL, "22"}}, {NUMLIT_VAL, "3"}}.
+            • As another example, the AST for the statement “xx[n+1] = yy;” is {ASSN_STMT, {ARRAY_VAR, "xx", {{BIN_OP, "+"}, {SIMPLE_VAR, "n"}. {NUMLIT_VAL, "1"}}}, {SIMPLE_VAR, "yy"}}.
+    6. Statement: Function Definition. The AST for the statement is {FUNC_DEF, II, PPP}, where II is the string form of the ID lexeme, and PPP is the AST for the program.
+        • For example, the AST for the statement “def foo() { output('xy'); } end” is {FUNC_DEF, "foo", {PROGRAM, {OUTPUT_STMT, {STRLIT_OUT, "'x'"}}}}.
+        • The AST for the statement “def nuthin() {}” is {FUNC_DEF, "nuthin", {PROGRAM}}.
+    7. Statement: If. The AST for the statement is an array whose first item is IF_STMT. The following items are the ASTs for the various exprs and programs, in order.
+        • For example, the AST for the statement “if (aa) { bb = inputnum(); } else { output('x'); }” is {IF_STMT, {SIMPLE_VAR, "aa"}, {PROGRAM, {ASSN_STMT, {SIMPLE_VAR, "bb"}, {INPUT_CALL}}}, {PROGRAM, {OUTPUT_STMT, {STRLIT_OUT, "'x'"}}}}.
+    8. Statement: While. The AST for the statement is {WHILE_LOOP, EEE, PPP}, where EEE is the AST for the expr, and PPP is the AST for the program.
+        • For example, the AST for the statement “while (true) { output('Hello'); }” is {WHILE_LOOP, {BOOLLIT_VAL, "true"}, {PROGRAM, {OUTPUT_STMT, {STRLIT_OUT, "'Hello'"}}}}.
+    9. Output-Argument: StringLiteral. The AST for the output_arg is {STRLIT_OUT, SS}, where SS is the string form of the STRLIT lexeme.
+        • For example, the AST for the output_arg “'abc'” is {STRLIT_OUT, "'abc'"}.
+    10. Output-Argument: End-of-Line. The AST for the output_arg is {EOL_OUT}.
+    11. Output-Argument: Character Code. The AST for the output_arg is {CHAR_CALL, EEE}, where EEE is the AST for the expr between the parentheses.
+        • For example, the AST for the output_arg “char(65)” is {CHAR_CALL, {NUMLIT_VAL, "65"}}.
+    12. Output-Argument: Expression. The AST for the output_arg is the AST for the expr.
+    13. Expression. This is handled much as in rdparser3. If there is a single compare_expr, then the AST for the expr is the AST for the compare_expr. Otherwise the AST is {{BIN_OP, OO}, AAA, BBB}, where OO is the string form of the last operator, AAA is the AST for everything that precedes it, and BBB is the AST for the last compare_expr.
+        • For example, the AST for the expr “1 and 2” is {{BIN_OP, "and"}, {NUMLIT_VAL, "1"}, {NUMLIT_VAL, "2"}}.
+        • And the AST for the expr “1 and 2 or 3” is {{BIN_OP, "or"}, {{BIN_OP, "and"}, {NUMLIT_VAL, "1"}, {NUMLIT_VAL, "2"}}, {NUMLIT_VAL, "3"}}.
+    14. Comparison-Expression. Again, this is handled much as in rdparser3. If there is a single arith_expr, then the AST for the compare_expr is the AST for the arith_expr. Otherwise the AST is {{BIN_OP, OO}, AAA, BBB}, where OO is the string form of the last operator, AA is the AST for everything that precedes it, and BB is the AST for the last arith_expr.
+        • (See Expression for an example of an AST involving multiple operators.)
+    15. Arithmetic-Expression. Once again, this is handled much as in rdparser3. If there is a single term, then the AST for the arith_expr is the AST for the term. Otherwise the AST is {{BIN_OP, OO}, AAA, BBB}, where OO is the string form of the last operator, AAA is the AST for everything that precedes it, and BBB is the AST for the last term.
+        • (See Expression for an example of an AST involving multiple operators.)
+    16. Term. Yet again, this is handled much as in rdparser3. If there is a single factor, then the AST for the term is the AST for the factor. Otherwise the AST is {{BIN_OP, OO}, AAA, BBB}, where OO is the string form of the last operator, AAA is the AST for everything that precedes it, and BBB is the AST for the last factor.
+        • (See Expression for an example of an AST involving multiple operators.)
+    17. Factor: Numeric Literal. The AST for the factor is {NUMLIT_VAL, NN}, where NN is the string form of the NUMLIT lexeme.
+        • For example, the AST for the factor “42” is {NUMLIT_VAL, "42"}.
+    18. Factor: Parenthesized Expression. The AST for the factor is the AST for the expr between the parentheses.
+    19. Factor: Boolean Literal. The AST for the factor is {BOOLLIT_VAL, BB}, where BB is the string form of the boolean-literal KEY lexeme.
+        • So the AST will be either {BOOLLIT_VAL, "true"} or {BOOLLIT_VAL, "false"}.
+        • (Note that, from a lexical point of view, “true” and “false” are Keyword lexemes; nonetheless, they function as literals when used in a program.)
+    20. Factor: Unary Operator. The AST is {{UN_OP, OO}, FFF}, where OO is the string form of the operator, and FFF is the AST for the factor on the right-hand side.
+        • For example, the AST for the factor “-xx” is {{UN_OP, "-"}, {SIMPLE_VAR, "xx"}}.
+        • As another example, the AST for the factor “not true” is {{UN_OP, "not"}, {BOOLLIT_VAL, "true"}}.
+        • (Note that, from a lexical point of view, “not” is a Keyword lexeme, not an Operator lexeme; nonetheless, it functions as a unary operator when used in a program.)
+    21. Factor: Input Number. The AST for the factor is {INPUT_CALL}.
+    22. Factor: Random Number. The AST for the factor is {RAND_CALL, EEE}, where EEE is the AST for the expr between the parentheses.
+        • For example, the AST for the factor “rand(42)” is {RAND_CALL, {NUMLIT_VAL, "42"}}.
+    23. Factor: Beginning with Identifier.
+        • If the ID is followed by parentheses, then the AST for the factor is {FUNC_CALL, II}, where II is the string form of the ID lexeme.
+            • For example, the AST for the factor “foo()” is {FUNC_CALL, "foo"}.
+            • (Note that a function call may also occur as a separate statement; in that case it will end with a semicolon. The AST of such a statement is identical. See Statement: Beginning with Identifier.)
+        • If the ID is followed by neither parentheses nor a left bracket, then the AST for the factor is {SIMPLE_VAR, II}, where II is the string form of the ID lexeme.
+            • For example, the AST for the factor “nn” is {SIMPLE_VAR, "nn"}.
+        • If the ID is followed by “[”, then the AST for the factor is {ARRAY_VAR, II, EEE}, where II is the string form of the ID lexeme, and EEE is the AST for the expr between the brackets.
+            • For example, the AST for the factor “aa[22]” is {ARRAY_VAR, "aa", {NUMLIT_VAL, "22"}}.
+            • As another example, the AST for the factor “xx[n+1]” is {ARRAY_VAR, "xx", {{BIN_OP, "+"}, {SIMPLE_VAR, "n"}. {NUMLIT_VAL, "1"}}}.
+
+ 
+- Test Program -
+    • A test program is available in the Git repository: parseit_test.lua. If you compile and run this program (unmodified!) with your code, then it will test whether your code works properly.
+
+    • Do not turn in the test program.
+
+- Notes -
+    • I have already done some of the work for you. See parseit.lua, in the Git repository. This is incomplete, but what is there should be correct. Also see rdparser3.lua, which is very similar to the expression parsing you will need to write in this assignment.
+    • To see what output your parser produces for some input, try use_parseit.lua, in the Git repository. You can change the check calls at the end of that file and pass any Nilgai code you want to your parser.
+    • See Thoughts on Assignment 4, in the lecture slides for February 21.
