@@ -8,8 +8,30 @@
 
 -- File based on parseit.lua (skeleton) written by Professor Glenn Chappell
 
--- For grammar & AST specification, see the Assignment 4 description.
-
+-- Grammar & AST specification
+    -- 1.  	program	        ->  { statement }
+    -- 2.  	statement       ->  ‘;’
+    -- 3.  	 	            |  	    ‘output’ ‘(’ [ output_arg { ‘,’ output_arg } ] ‘)’ ‘;’
+    -- 4.  	 	            |  	    ‘return’ expr ‘;’
+    -- 5.  	 	            |  	    ID ( ‘(’ ‘)’ | [ ‘[’ expr ‘]’ ] ‘=’ expr ) ‘;’
+    -- 6.  	 	            |  	    ‘def’ ID ‘(’ ‘)’ ‘{’ program ‘}’
+    -- 7.  	 	            |   	‘if’ ‘(’ expr ‘)’ ‘{’ program ‘}’ { ‘elseif’ ‘(’ expr ‘)’ ‘{’ program ‘}’ } [ ‘else’ ‘{’ program ‘}’ ]
+    -- 8.  	 	            |  	    ‘while’ ‘(’ expr ‘)’ ‘{’ program ‘}’
+    -- 9.  	output_arg	    ->   STRLIT
+    -- 10.  	 	        |  	    ‘eol’
+    -- 11.  	 	        |  	    ‘char’ ‘(’ expr ‘)’
+    -- 12.  	 	        |   	expr
+    -- 13.  expr	        ->  compare_expr { ( ‘and’ | ‘or’ ) compare_expr }
+    -- 14.  compare_expr    ->  arith_expr { ( ‘==’ | ‘!=’ | ‘<’ | ‘<=’ | ‘>’ | ‘>=’ ) arith_expr }
+    -- 15.  arith_expr	    ->  term { ( ‘+’ | ‘–’ ) term }
+    -- 16.  term	        ->  factor { ( ‘*’ | ‘/’ | ‘%’ ) factor }
+    -- 17.  factor	        ->  NUMLIT
+    -- 18.  	 	        |  	    ‘(’ expr ‘)’
+    -- 19.  	 	        |   	( ‘true’ | ‘false’ )
+    -- 20.  	 	        |   	( ‘+’ | ‘-’ | ‘not’ ) factor
+    -- 21.  	 	        |   	‘inputnum’ ‘(’ ‘)’
+    -- 22.  	 	        |   	‘rand’ ‘(’ expr ‘)’
+    -- 23.  	 	        |   	ID [ ‘(’ ‘)’ | ‘[’ expr ‘]’ ]
 
 local lexer = require "lexit"
 
@@ -38,6 +60,7 @@ local lexcat = 0    -- Category of current lexeme:
                     --  one of categories below, or 0 for past the end
 
 -- For last matched lexeme
+local lexstr = ""   -- String form of current lexeme
 local matched = ""  -- String form of last matched lexeme
 
 
