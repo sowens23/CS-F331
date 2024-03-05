@@ -37,8 +37,68 @@
   | [Week-13](#Week-13) | | |
   | [Week-14](#Week-14) | | |
 
+# Week-8
+[Top](#TOP)
+## 2024-03-04
+  ### Review
+  - A Haskel **I/O action** holds a description of zero or more side effects plus a wrapped value.
+    - Function *putStr* takes a *String* and returns an I/O action representing printing the String to the standard output.
+  - Multiple I/O actions can be combined into one, which holds:
+    - A description of all side effects from the combined I/O actions.
+    - The wrapped value from the last of the combined I/O actions.
+  ### Haskell: I/O (cont'd)
+  - Haskell's **do-expression** offers a cleaner way to write I/O
+  - a **Handle**: Object that identifies and allows access to an open file.
+  - **Flush**: write any buffered characters
+  - An **I/O action** holds a description of a sequence of side effects plus a wrapped value
+  - A **do-expression** is nier. It is syntactic sugar arround >> and >>=.
+  - To overload the "==" operator for type *Product*, we place this type into the *Eq* typeclass. We want type *Product* to be an **instance** of class *Eq*
+    - In the **instance declaration**, we provide a definition of the "==" operator for *Product*.
+      ```
+      instance Eq Product where
+        Pr pn1 mn1 == Pr pn2 mn2 = 
+          (pn1 == pn2) && (mn1 == mn2)
+      ```
+    - Now we can use "==" operator with *Product*
+  - If a Haskell program uses values obtained via input, what ends up being returned in the I/O action is a function call to run the *entire remainder* of the program.
+    - This is to ensure that *purity* is not compromised.
+    - This would effectively make any larger program of Haskell extremely slow, however, we can cut all of this nonsense out in the optimizer during compile time.
+  ### Haskell: Data
+  - 
+
 # Week-7
 [Top](#TOP)
+## 2024-03-01
+  - In Vegas for Aivon's wedding.
+  ### Review
+  - 
+  ### Haskell: I/O
+
+## 2024-02-28
+  - In Vegas for Aivon's wedding.
+  ### Review
+  - Haskell has two types of identifiers.
+    1. **Normal identifiers** begin with lowercase, or underscore. These name variables, and functions.
+    2. **Special identifiers** begin with an UPPER-CASE. These name modules, types, and constructors.
+  - ToDo: MyMap and MyFilter
+  - A **predicate** is a function that returns a boolean value.
+  ### Haskell: Flow of Control
+  - **Flow of control** refers to the ways a PL determines what code is executed.
+    - Haskell has a **pattern matching** facility, which allows us to choose one of a number of function definitions. The rule is that the first defintion with a matching pattern is used.
+  - Recursion in Haskell can be less costly, because it uses **tail-call optimization** (TCO), this means that tail call does not use additional stack space.
+  - Haskell does **lazy evaluation**
+  - **Selection** refers to flow-of-control constructs that allow us to choose one of multiple options to execute.
+    - In C++ this could be if ... else, or switch
+    - In Haskeel it's pattern matching. Other options could be if .. else .. then, *guard*, and a *case* construction.
+  - **Guards** are the Haskell notation for the mathematical equivalent of a curly braced interval notation with multiple cases
+    ```haskell
+    myAbs x
+      | x >= 0    = x
+      | otherwise = -x
+    ```
+  - A very important idea in functional programming is that **Many flow-of-control constructs can be encapsulated as functions**
+  - Another kid of a loop involves processing a sequence of values and returning a single value. The operation performed by a loop like this is called a **fold**, or a **reduce**
+
 ## 2024-02-26
   ### Review
   - Haskel has **Significant Indentation**. This signifies start and end of code blocks
