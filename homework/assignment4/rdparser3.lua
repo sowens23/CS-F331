@@ -32,7 +32,7 @@
 --     similarly for the other operators.
 --   - The AST for ( X ) is XT.
 
-local lexer = require "lexer"
+local lexer = require "lexit"
 
 
 -- *********************************************************************

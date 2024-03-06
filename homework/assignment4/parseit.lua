@@ -33,7 +33,7 @@
     -- 22.  	 	        |   	‘rand’ ‘(’ expr ‘)’
     -- 23.  	 	        |   	ID [ ‘(’ ‘)’ | ‘[’ expr ‘]’ ]
 
-local lexer = require "lexit"
+local lexit = require "lexit"
 
 
 -- *********************************************************************
@@ -49,11 +49,11 @@ local parseit = {}  -- Our module
 -- *********************************************************************
 
 
--- For lexer iteration
+-- For lexit iteration
 local iter          -- Iterator returned by lexit.lex
 local state         -- State for above iterator (maybe not used)
-local lexer_out_s   -- Return value #1 from above iterator
-local lexer_out_c   -- Return value #2 from above iterator
+local lexit_out_s   -- Return value #1 from above iterator
+local lexit_out_c   -- Return value #2 from above iterator
 
 -- For current lexeme
 local lexcat = 0    -- Category of current lexeme:
@@ -102,11 +102,11 @@ local ARRAY_VAR    = 20
 -- Function init must be called before this function is called.
 local function advance()
     -- Advance the iterator
-    lexer_out_s, lexer_out_c = iter(state, lexer_out_s)
+    lexit_out_s, lexit_out_c = iter(state, lexit_out_s)
 
     -- If we're not past the end, copy current lexeme into vars
-    if lexer_out_s ~= nil then
-        lexstr, lexcat = lexer_out_s, lexer_out_c
+    if lexit_out_s ~= nil then
+        lexstr, lexcat = lexit_out_s, lexit_out_c
     else
         lexstr, lexcat = "", 0
     end
@@ -116,7 +116,7 @@ end
 -- init
 -- Initial call. Sets input for parsing functions.
 local function init(prog)
-    iter, state, lexer_out_s = lexit.lex(prog)
+    iter, state, lexit_out_s = lexit.lex(prog)
     advance()
 end
 
@@ -251,9 +251,11 @@ end
 function parse_statement()
     local good, ast1, ast2, saveid
 
+    -- | ';'
     if matchString(";") then
         return true, { EMPTY_STMT }
 
+    -- | ‘output’ ‘(’ [ output_arg { ‘,’ output_arg } ] ‘)’ ‘;’
     elseif matchString("output") then
         if not matchString("(") then
             return false, nil
@@ -293,6 +295,7 @@ function parse_statement()
 
         return true, ast1
 
+    -- | ‘return’ expr ‘;’
     elseif matchString("return") then
         good, ast1 = parse_expr()
         if not good then
@@ -305,9 +308,58 @@ function parse_statement()
 
         return true, { RETURN_STMT, ast1 }
 
+    -- ID ( ‘(’ ‘)’ | [ ‘[’ expr ‘]’ ] ‘=’ expr ) ‘;’
     elseif matchCat(lexit.ID) then
-        -- TODO: WRITE THIS!!!
-        return false, nil  -- DUMMY
+        -- TODO: DONE
+        saveid = matched
+
+        if matchString("(") then
+            if not matchString(")") then
+                return false, nil
+            end
+
+            if not matchString(";") then
+                return false, nil
+            end
+
+            return true, { FUNC_CALL, saveid }
+
+        elseif matchString("[") then
+            good, ast1 = parse_expr()
+            if not good or not matchString("]") then
+                return false, nil
+            end
+            
+            if not matchString("=") then
+                return false, nil
+            end
+
+            good, ast2 = parse_expr()
+            if not good then
+                return false, nil
+            end
+
+            if not matchString(";") then
+                return false, nil
+            end
+
+            return true, { FUNC_DEF, saveid, ast1, ast2 }
+
+        el
+        seif matchString("=") then
+            good, ast1 = parse_expr()
+            if not good then
+                return false, nil
+            end
+            
+            if not matchString(";") then
+                return false, nil
+            end
+
+            return true, { ASSN_STMT, {SIMPLE_VAR, saveid}, ast1 }
+        else
+            return false, nil
+        end
 
     elseif matchString("def") then
         if not matchCat(lexit.ID) then
@@ -337,9 +389,122 @@ function parse_statement()
 
         return true, { FUNC_DEF, saveid, ast1 }
 
+    -- | ‘if’ ‘(’ expr ‘)’ ‘{’ program ‘}’ { ‘elseif’ ‘(’ expr ‘)’ ‘{’ program ‘}’ } [ ‘else’ ‘{’ program ‘}’ ]
+    elseif matchString("if") then
+        -- TODO: DONE
+        if not matchString("(") then
+            return false, nil
+        end
+
+        good, ast1 = parse_expr()
+        if not good then
+            return false, nil
+        end
+
+        if not matchString(")") then
+            return false, nil
+        end
+
+        if not matchString("{") then
+            return false, nil
+        end
+
+        good, ast2 = parse_program()
+        if not good then
+            return false, nil
+        end
+
+        if not matchString("}") then
+            return false, nil
+        end
+
+        -- local if_ast = {IF_STMT, ast1, ast2}
+        local if_ast = {IF_STMT, ast1, ast2}
+
+        while matchString("elseif") do
+            if not matchString("(") then
+                return false, nil
+            end
+
+            good, ast1 = parse_expr()
+            if not good then
+                return false, nil
+            end
+
+            if not matchString(")") then
+                return false, nil
+            end
+
+            if not matchString("{") then
+                return false, nil
+            end
+
+            good, ast2 = parse_program()
+            if not good then
+                return false, nil
+            end
+
+            if not matchString("}") then
+                return false, nil
+            end
+
+            table.insert(if_ast, ast1)
+            table.insert(if_ast, ast2)
+        end
+
+        if matchString("else") then
+            if not matchString("{") then
+                return false, nil
+            end
+
+            good, ast1 = parse_program()
+            if not good then
+                return false, nil
+            end
+
+            if not matchString("}") then
+                return false, nil
+            end
+
+            table.insert(if_ast, ast1)
+        end
+
+        return true, if_ast
+
+    -- | ‘while’ ‘(’ expr ‘)’ ‘{’ program ‘}’
+    elseif matchString("while") then
+        -- TODO: DONE
+            if not matchString("(") then
+                return false, nil
+            end
+
+            good, ast1 = parse_expr()
+            if not good then
+                return false, nil
+            end
+
+            if not matchString(")") then
+                return false, nil
+            end
+
+            if not matchString("{") then
+                return false, nil
+            end
+
+            good, ast2 = parse_program()
+            if not good then
+                return false, nil
+            end
+
+            if not matchString("}") then
+                return false, nil
+            end
+
+            return true, {WHILE_LOOP, ast1, ast2}
     else
-        -- TODO: WRITE THIS!!!
-        return false, nil  -- DUMMY
+        -- ???: Not sure what to do here
+        -- This might be right
+        return false, nil
     end
 end
 
@@ -348,7 +513,8 @@ end
 -- Parsing function for nonterminal "output_arg".
 -- Function init must be called before this function is called.
 function parse_output_arg()
-    local good, ast
+    -- TODO: DONE   
+    local good, ast1
 
     if matchCat(lexit.STRLIT) then
         return true, { STRLIT_OUT, matched }
@@ -356,9 +522,28 @@ function parse_output_arg()
     elseif matchString("eol") then
         return true, { EOL_OUT }
 
+    elseif matchString("char") then
+        if not matchString("(") then
+            return false, nil
+        end
+
+        good, ast1 = parse_expr()
+        if not good then
+            return false, nil
+        end
+
+        if not matchString(")") then
+            return false, nil
+        end
+
+        return true, {CHAR_CALL, ast1}
     else
-        -- TODO: WRITE THIS!!!
-        return false, nil  -- DUMMY
+        good, ast1 = parse_expr()
+        if not good then
+            return false, nil
+        end
+
+        return true, ast
     end
 end
 
@@ -366,36 +551,114 @@ end
 -- parse_expr
 -- Parsing function for nonterminal "expr".
 -- Function init must be called before this function is called.
+-- →  	compare_expr { ( ‘and’ | ‘or’ ) compare_expr }
 function parse_expr()
-    -- TODO: WRITE THIS!!!
-    return false, nil  -- DUMMY
+    -- TODO: Done
+    local good, ast1 = parse_compare_expr()
+    local ast2
+    if not good then
+        return false, nil
+    end
+
+
+    while matchString("and") or matchString("or") do
+        local op = matched -- Capture binary operator
+
+        good, ast2 = parse_compare_expr()
+        if not good then
+            return false, nil
+        end
+
+        ast1 = {{ BIN_OP, op}, ast1, ast2}
+    end
+
+    return true, ast1
 end
 
 
 -- parse_compare_expr
 -- Parsing function for nonterminal "compare_expr".
 -- Function init must be called before this function is called.
+-- compare_expr	  →  	arith_expr { ( ‘==’ | ‘!=’ | ‘<’ | ‘<=’ | ‘>’ | ‘>=’ ) arith_expr }
 function parse_compare_expr()
-    -- TODO: WRITE THIS!!!
-    return false, nil  -- DUMMY
+    -- TODO: DONE
+    local good, ast1 = parse_arith_expr()
+    local ast2
+    if not good then
+        return false, nil
+    end
+
+
+    while matchString("==") or matchString("!=") 
+        or matchString("<") or matchString("<=")
+        or matchString(">") or matchString(">=") do
+        local op = matched -- Capture arithmetic operator
+
+        good, ast2 = parse_arith_expr()
+        if not good then
+            return false, nil
+        end
+
+        ast1 = {{ BIN_OP, op}, ast1, ast2}
+    end
+
+    return true, ast1
 end
 
 
 -- parse_arith_expr
 -- Parsing function for nonterminal "arith_expr".
 -- Function init must be called before this function is called.
+-- arith_expr	  →  	term { ( ‘+’ | ‘–’ ) term }
 function parse_arith_expr()
-    -- TODO: WRITE THIS!!!
-    return false, nil  -- DUMMY
+    -- TODO: DONE
+    local good, ast1 = parse_term()
+    local ast2
+    if not good then
+        return false, nil
+    end
+
+
+    while matchString("+") or matchString("-") do
+        local op = matched -- Capture arithmetic operator
+
+        good, ast2 = parse_term()
+        if not good then
+            return false, nil
+        end
+
+        ast1 = {{ NUMLIT_VAL, op}, ast1, ast2}
+    end
+
+    return true, ast1
 end
 
 
 -- parse_term
 -- Parsing function for nonterminal "term".
 -- Function init must be called before this function is called.
+-- term	  →  	factor { ( ‘*’ | ‘/’ | ‘%’ ) factor }
 function parse_term()
-    -- TODO: WRITE THIS!!!
-    return false, nil  -- DUMMY
+    -- TODO: DONE
+    local good, ast1 = parse_factor()
+    local ast2
+    if not good then
+        return false, nil
+    end
+
+
+    while matchString("*") or matchString("/") or matchString("%") do
+        local op = matched -- Capture arithmetic operator
+
+        good, ast2 = parse_factor()
+        if not good then
+            return false, nil
+        end
+
+        ast1 = {{ NUMLIT_VAL, op}, ast1, ast2}
+    end
+
+    return true, ast1
 end
 
 
@@ -403,8 +666,93 @@ end
 -- Parsing function for nonterminal "factor".
 -- Function init must be called before this function is called.
 function parse_factor()
-    -- TODO: WRITE THIS!!!
-    return false, nil  -- DUMMY
+    -- TODO: WRITING THIS
+    local good, ast1, ast2
+
+    -- factor	  →  	NUMLIT
+    if matchCat(lexit.NUMLIT) then
+        ast1 = {NUMLIT_VAL, matched}
+
+    -- ‘(’ expr ‘)’
+    elseif matchString("(") then
+        good, ast1 = parse_expr()
+        if not good or matchString(")") then
+            return false, nil
+        end
+
+    -- ( ‘true’ | ‘false’ )
+    elseif matchString("true") or matchString("false") then
+        ast1 = {BOOLLIT_VAL, matched}
+
+        -- ( ‘+’ | ‘-’ | ‘not’ ) factor
+    elseif matchString("+") or matchString("-") or matchString("not") then
+        good, ast1 = parse_factor()
+        if not good then
+            return false, nil
+        end
+
+        ast1 = {UN_OP, matched}
+
+        -- ‘inputnum’ ‘(’ ‘)’
+    elseif matchString("inputnum") then
+        if not matchString("(") then
+            return false, nil
+        end
+
+        if not matchString(")") then
+            return false, nil
+        end
+
+        ast1 = {INPUT_CALL}
+
+        -- ‘rand’ ‘(’ expr ‘)’
+    elseif matchString("rand") then
+        if not matchString("(") then
+            return false, nil
+        end
+
+        good, ast2 = parse_expr()
+        if not good then
+            return false, nil
+        end
+
+        if not matchString(")") then
+            return false, nil
+        end
+
+        ast1 = {RAND_CALL, ast2}
+
+    -- ID [ ‘(’ ‘)’ | ‘[’ expr ‘]’ ]
+    elseif matchCat(lexit.ID) then
+        local id = matchString()
+
+        if matchString("(") then
+           if not matchString(")") then
+            return false, nil
+           end
+
+           return {FUNC_CALL, id}
+
+        elseif matchString("[") then
+            good, ast2 = parse_expr()
+            if not good then
+                return false, nil
+            end
+
+            if not matchString("]") then
+                return false, nil
+            end
+
+            ast1 = {ARRAY_VAR, id, ast1}
+
+        else
+            ast1 = {SIMPLE_VAR, id}
+        end
+    else
+        return false, nil
+    end
+
+    return true, ast1
 end
 
 

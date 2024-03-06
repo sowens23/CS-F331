@@ -423,7 +423,7 @@ end
 -- from parser (good, AST), and string giving the name of the test. Do
 -- test & print result. If test fails and EXIT_ON_FIRST_FAILURE is true,
 -- then print detailed results and exit program.
-function checkParse(t, prog,
+function  checkParse(t, prog,
                     expectedGood, expectedDone, expectedAST,
                     testName)
     local actualGood, actualDone, actualAST = parseit.parse(prog)
