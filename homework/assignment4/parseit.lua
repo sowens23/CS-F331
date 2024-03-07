@@ -273,26 +273,28 @@ function parse_statement()
         if not good then
             return false, nil
         end
-
+        
         ast1 = { OUTPUT_STMT, ast2 }
-
+        
         while matchString(",") do
             good, ast2 = parse_output_arg()
             if not good then
                 return false, nil
             end
-
+            
             table.insert(ast1, ast2)
         end
-
+        
         if not matchString(")") then
             return false, nil
         end
-
+        
         if not matchString(";") then
+            -- io.write("error 12\n")
             return false, nil
         end
-
+        
+        -- io.write("error 12\n")
         return true, ast1
 
     -- | ‘return’ expr ‘;’
@@ -310,7 +312,6 @@ function parse_statement()
 
     -- ID ( ‘(’ ‘)’ | [ ‘[’ expr ‘]’ ] ‘=’ expr ) ‘;’
     elseif matchCat(lexit.ID) then
-        -- TODO: DONE
         saveid = matched
 
         if matchString("(") then
@@ -343,7 +344,7 @@ function parse_statement()
                 return false, nil
             end
 
-            return true, { FUNC_DEF, saveid, ast1, ast2 }
+            return true, { ASSN_STMT, {ARRAY_VAR, saveid, ast1}, ast2 }
 
         elseif matchString("=") then
             good, ast1 = parse_expr()
@@ -390,7 +391,6 @@ function parse_statement()
 
     -- | ‘if’ ‘(’ expr ‘)’ ‘{’ program ‘}’ { ‘elseif’ ‘(’ expr ‘)’ ‘{’ program ‘}’ } [ ‘else’ ‘{’ program ‘}’ ]
     elseif matchString("if") then
-        -- TODO: DONE
         if not matchString("(") then
             return false, nil
         end
@@ -472,7 +472,6 @@ function parse_statement()
 
     -- | ‘while’ ‘(’ expr ‘)’ ‘{’ program ‘}’
     elseif matchString("while") then
-        -- TODO: DONE
             if not matchString("(") then
                 return false, nil
             end
@@ -501,8 +500,7 @@ function parse_statement()
 
             return true, {WHILE_LOOP, ast1, ast2}
     else
-        -- ???: Not sure what to do here
-        -- This might be right
+
         return false, nil
     end
 end
@@ -512,7 +510,6 @@ end
 -- Parsing function for nonterminal "output_arg".
 -- Function init must be called before this function is called.
 function parse_output_arg()
-    -- TODO: DONE   
     local good, ast1
 
     if matchCat(lexit.STRLIT) then
@@ -542,7 +539,7 @@ function parse_output_arg()
             return false, nil
         end
 
-        return true, ast
+        return true, ast1
     end
 end
 
@@ -552,7 +549,6 @@ end
 -- Function init must be called before this function is called.
 -- →  	compare_expr { ( ‘and’ | ‘or’ ) compare_expr }
 function parse_expr()
-    -- TODO: Done
     local good, ast1 = parse_compare_expr()
     local ast2
     if not good then
@@ -580,7 +576,6 @@ end
 -- Function init must be called before this function is called.
 -- compare_expr	  →  	arith_expr { ( ‘==’ | ‘!=’ | ‘<’ | ‘<=’ | ‘>’ | ‘>=’ ) arith_expr }
 function parse_compare_expr()
-    -- TODO: DONE
     local good, ast1 = parse_arith_expr()
     local ast2
     if not good then
@@ -610,7 +605,6 @@ end
 -- Function init must be called before this function is called.
 -- arith_expr	  →  	term { ( ‘+’ | ‘–’ ) term }
 function parse_arith_expr()
-    -- TODO: DONE
     local good, ast1 = parse_term()
     local ast2
     if not good then
@@ -626,7 +620,7 @@ function parse_arith_expr()
             return false, nil
         end
 
-        ast1 = {{ NUMLIT_VAL, op}, ast1, ast2}
+        ast1 = {{ BIN_OP, op}, ast1, ast2}
     end
 
     return true, ast1
@@ -638,7 +632,6 @@ end
 -- Function init must be called before this function is called.
 -- term	  →  	factor { ( ‘*’ | ‘/’ | ‘%’ ) factor }
 function parse_term()
-    -- TODO: DONE
     local good, ast1 = parse_factor()
     local ast2
     if not good then
@@ -654,7 +647,7 @@ function parse_term()
             return false, nil
         end
 
-        ast1 = {{ NUMLIT_VAL, op}, ast1, ast2}
+        ast1 = {{ BIN_OP, op}, ast1, ast2}
     end
 
     return true, ast1
@@ -665,32 +658,34 @@ end
 -- Parsing function for nonterminal "factor".
 -- Function init must be called before this function is called.
 function parse_factor()
-    -- TODO: WRITING THIS
     local good, ast1, ast2
 
     -- factor	  →  	NUMLIT
     if matchCat(lexit.NUMLIT) then
-        ast1 = {NUMLIT_VAL, matched}
+        return true, {NUMLIT_VAL, matched}
 
     -- ‘(’ expr ‘)’
     elseif matchString("(") then
         good, ast1 = parse_expr()
-        if not good or matchString(")") then
+        if not good or not matchString(")") then
+
             return false, nil
         end
 
     -- ( ‘true’ | ‘false’ )
     elseif matchString("true") or matchString("false") then
-        ast1 = {BOOLLIT_VAL, matched}
+        return true, {BOOLLIT_VAL, matched}
 
         -- ( ‘+’ | ‘-’ | ‘not’ ) factor
     elseif matchString("+") or matchString("-") or matchString("not") then
+        local op1 = matched
         good, ast1 = parse_factor()
         if not good then
+
             return false, nil
         end
 
-        ast1 = {UN_OP, matched}
+        return true, { {UN_OP, op1}, ast1}
 
         -- ‘inputnum’ ‘(’ ‘)’
     elseif matchString("inputnum") then
@@ -702,7 +697,7 @@ function parse_factor()
             return false, nil
         end
 
-        ast1 = {INPUT_CALL}
+        return true, {INPUT_CALL}
 
         -- ‘rand’ ‘(’ expr ‘)’
     elseif matchString("rand") then
@@ -719,33 +714,34 @@ function parse_factor()
             return false, nil
         end
 
-        ast1 = {RAND_CALL, ast2}
+        return true, {RAND_CALL, ast2}
 
     -- ID [ ‘(’ ‘)’ | ‘[’ expr ‘]’ ]
     elseif matchCat(lexit.ID) then
-        local id = matchString()
+        local id = matched
 
         if matchString("(") then
-           if not matchString(")") then
-            return false, nil
-           end
+            if not matchString(")") then
+                return false, nil
+            end
 
-           return {FUNC_CALL, id}
+            return true, {FUNC_CALL, id}
 
         elseif matchString("[") then
-            good, ast2 = parse_expr()
+            good, ast1 = parse_expr()
             if not good then
                 return false, nil
             end
-
+            
+            
             if not matchString("]") then
                 return false, nil
             end
-
-            ast1 = {ARRAY_VAR, id, ast1}
-
+            
+            return true, {ARRAY_VAR, id, ast1}
+            
         else
-            ast1 = {SIMPLE_VAR, id}
+            return true, {SIMPLE_VAR, id}
         end
     else
         return false, nil

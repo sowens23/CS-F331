@@ -140,7 +140,7 @@ symbolNames = {
 -- Main Program
 -- *****************************
 
-local prog = "if(true){}"
+local prog = "x=a[1];"
 
 io.write("\n" .. prog .. "\n")
 local actualGood, actualDone, actualAST = parseit.parse(prog)
