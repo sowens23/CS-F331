@@ -39,6 +39,74 @@
 
 # Week-8
 [Top](#TOP)
+## 2024-03-08
+  - Midterm Test
+
+## 2024-03-06
+  ### Review
+  - An **I/O action** is a value that holds a description of a sequence of zero or more side effects, plug a wrapped (potential) value
+  - Do-expressions are syntactic sugar around operators for I/O actions
+  ### Haskell: Data (cont'd)
+  - Haskell calls IO a **type constructor**
+    - ie. IO String -- A type: an IO action that wraps a string
+  - Another standard type constructor is *maybe*, this allows us to make a value of an existing type, that either contains a value, or has a null value
+    - ie. data Maybe t = Just t | Nothing
+  - And another standard type constructor is *Either*, which allows us to make a value that holds one of two specified types.
+    - ie. data Either a b = Left a | Right b
+
+  - Let's write a Binary Tree
+    - Such a binary tree either has no nodes (empty) or has a root node, with two subtrees.
+    - Type BT will have two constructors
+    - BTEmpty and BTNode
+    - Recall that a binary search tree is a binary tree in which each node contains a single key;
+      1. and every key in a nodes right subtree is greater than or equal to the node
+      2. and every key in a nodes left subtree is less than or equal to the node
+      ```haskell
+      -- vt - Value Type
+      data BT vt = BTEmpty | BTNode vt (BT vt) (BT vt)
+      ```
+      
+  - Let's right a Treesort algorithm
+    - **Treesort** is a comparison sort. It operates as follows, given a list:
+      - Create an empty Binary Search Tree
+      - Insert each list item into tree
+      - Do an inorder traversal of the tree to generate the final sorted list.
+      - Recall an inorder traversal will bisit the nodes left subtree, then the node itself, then the right subtree. Touching the base of a nodes "box" as it runs counter-clockwise.
+      - Plan
+        1. Function *bstInsert* takes a BT holding a Binary Search Tree and an item to insert, returns a BST with item inserted.
+        2. Function *inorderTraverse*, takes a BT and returns a list of items in tree in order, making a recursive call on two subtrees and concatenates the results along with root item
+        3. Function *treesort*, takes a list and returns a sorted list. Creates an empty BT and calls bstInsert with each item in the list, then calls *inorderTraverse* and returns it's results
+    ```haskell
+    -- vt = Value Type
+    data BT vt = BTEmpty | BTNode vt (BT vt) (BT vt)
+
+    bstInsert :: Ord vt => BT vt -> vt > BT vt
+    bstInsert BTEmpty x = BTNode x BTEmpty BTEmpty
+    bstInsert (BTNode root lsub rsub) x
+      | x < root  = BTNode root (bstInsert lsub x) rsub
+      | otherwise = BTNode root lsub (bstInsert rsub x)
+    
+    inorderTraverse :: BT vt -> [vt]
+    inorderTraverse BTEmpty = []
+    inorderTraverse BTNode root lsub rsub = 
+      (inorderTraverse lsub) + root ++ (inorderTraverse rsub)
+      -- () is returning a list, so we concatenate the 3 items returned above.
+
+    treesort :: Ord vt [vt] => [vt] -> [vt]
+    -- foldl: returns ((((x1 + x2) + x3) + x4) + x5) something like this
+    treesort xs = inorderTraverse $ foldl bstInsert BTEmpty xs
+    ```
+  ### Forth PL Feature: Identifiers & Values
+  - An **identifier** is the name of something in source code.
+  - Every identifier lies in some **namespace
+  - The code from which an identifier is accessible forms the idenifier's **scope**
+  - **Static scope**: scope is determined before runtime.
+  - This is typically **lexical scope**: The scope consists of a fixed portion of the program's source code.
+  - **Dynamic scope**: scope is determined at runtime.
+  - A **value** might be a number or a string or a Boolean or some kind of object
+  - An **expression** is an entity that has a value.
+  -  
+
 ## 2024-03-04
   ### Review
   - A Haskel **I/O action** holds a description of zero or more side effects plus a wrapped value.
@@ -63,8 +131,6 @@
   - If a Haskell program uses values obtained via input, what ends up being returned in the I/O action is a function call to run the *entire remainder* of the program.
     - This is to ensure that *purity* is not compromised.
     - This would effectively make any larger program of Haskell extremely slow, however, we can cut all of this nonsense out in the optimizer during compile time.
-  ### Haskell: Data
-  - 
 
 # Week-7
 [Top](#TOP)

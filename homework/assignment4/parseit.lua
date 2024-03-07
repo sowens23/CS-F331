@@ -345,8 +345,7 @@ function parse_statement()
 
             return true, { FUNC_DEF, saveid, ast1, ast2 }
 
-        el
-        seif matchString("=") then
+        elseif matchString("=") then
             good, ast1 = parse_expr()
             if not good then
                 return false, nil
