@@ -39,6 +39,93 @@
 
 # Week-8
 [Top](#TOP)
+## 2024-03-18
+  ### Where Are We?
+  - Upon successful completion of CS 331, students should:
+    - Understand the concepts of syntax and semantics, and how syntax can be specified.
+    - Understand, and have experience implementing, basic lexical analysis, parsing, and interpretation.
+    - Understand the various kinds of programming languages and the primary ways in which they differ.
+    - Understand standard programming language features and the forms these take in different programming languages.
+    - Be familiar with the impact (local, global, etc.) that choice of programming language has on programmers and users.
+    - Have a basic programming proficiency in multiple significantly different programming languages.
+  ### PL Category: Concatenative PLs
+  - A concatenative programming language is one in which the concatenation of two programs is a valid program, with the data returned by the first part being passed to the second part.
+    - The first major concatenative language was Forth, developed by Charles H. Moore beginning in the 1960s
+  - **Postscript**, from Adobe Systems is the most heavily used concatenative language used today.
+  - A typical concatenative language has the following characteristics.
+    - It is **stack-based**: stacks are the primary means of passing around data.
+    - Usually syntax is simple, consisting of **words**, seperated by whitespace.
+    - It is **extensible**: built-in constructs have the same status as those put together by a programmer.
+  ### Intro to Forth 
+  - Forth has a very small interpreter and very low memory requirements. Because of this, it had a large influence late 1970's to early 1980's but it's popularity has waned.
+  - It remains a strong influence on some other PL's
+  - In 1994 a Forth standard was issued by ANSI known as **ANS Forth**, which is what we will use for the remainder of this class.
+  - Forth words are **case-INsensitive**, as opposed to c++, lua, and Haskell.
+  - Forth Syntax does not dinstinguish between variables, functions, and flow-of-control constructs. They're all just words.
+  - Forth is **extensible** meaning new functionality has equal status with what already exists.
+    - Forth does **not** have an extensible type system.
+  - Extensibility is enabled via an internal Forth data structure: the **dictionary**. This lists all defined words, in the order they are defined.
+  - Forth allows for **local** words to be defined within the definition of a word
+  - Forth words (global) are **dynamically scoped**, they may be used at any time after their definition.
+  - Forth supports types
+    - Numbers (Floating) and Operations, Boolean, Pointers, Characters
+  - A **parsing word** is a word that tells Forth to look at the next word. Used for things like "import myprog.fs"
+  - Write helloworld.fs in Forth
+    ```fs
+    \ hello.fs
+    \ Spencer Baysinger
+    \ 2024-03-18
+    \ Hello world program in Forth
+    
+    \ " s" This is a whole string " will create a string s
+    \ "type s" will pull the string from stack and print
+    \ s" Hello, World!
+    \ type s
+
+    \ You can print immediately w/out the use of a string with 
+    \ ." Hello, World!
+
+    cr. \ This will do something, idk
+    ." Hello, World!
+    ```
+  - Alrighty, now lets do Fibonacci
+    ```fs
+    \ fibo.fs
+    \ Spencer Baysinger
+    \ 2024-03-18
+    \ Fibonacci sequence mostly copied from Glenn Chappell in class demo
+
+    : fibo { n --- F(n) }
+      0 { currfib }
+      1 { nextfib }
+
+      n 0 ?do
+        nextfib currfib nextfib + to nextfib to currfib
+      loop
+
+      currfib
+    ;
+
+    : printfibos { k-- }
+      k 0 ?do
+        ." F("
+        i 1 .r
+        ." ) = "
+        i fibo .
+        cr
+      loop
+    ;
+
+    20 constant how_many_to_print
+    cr 
+    ." Fibonacci Numbers"
+    cr
+    how_many_to_print printfibos
+    cr
+    ```
+
+# Week-8
+[Top](#TOP)
 ## 2024-03-08
   - Midterm Test
 
