@@ -676,7 +676,7 @@ function parse_factor()
     elseif matchString("true") or matchString("false") then
         return true, {BOOLLIT_VAL, matched}
 
-        -- ( ‘+’ | ‘-’ | ‘not’ ) factor
+    -- ( ‘+’ | ‘-’ | ‘not’ ) factor
     elseif matchString("+") or matchString("-") or matchString("not") then
         local op1 = matched
         good, ast1 = parse_factor()
@@ -687,7 +687,7 @@ function parse_factor()
 
         return true, { {UN_OP, op1}, ast1}
 
-        -- ‘inputnum’ ‘(’ ‘)’
+    -- ‘inputnum’ ‘(’ ‘)’
     elseif matchString("inputnum") then
         if not matchString("(") then
             return false, nil
@@ -699,7 +699,7 @@ function parse_factor()
 
         return true, {INPUT_CALL}
 
-        -- ‘rand’ ‘(’ expr ‘)’
+    -- ‘rand’ ‘(’ expr ‘)’
     elseif matchString("rand") then
         if not matchString("(") then
             return false, nil

@@ -86,30 +86,6 @@ end
 -- *********************************************************************
 
 
--- Symbolic Constants for AST
--- Names differ from those in assignment, to avoid interference.
-local PROGRAMx     = 1
-local EMPTYxSTMT   = 2
-local OUTPUTxSTMT  = 3
-local RETURNxSTMT  = 4
-local ASSNxSTMT    = 5
-local FUNCxCALL    = 6
-local FUNCxDEF     = 7
-local IFxSTMT      = 8
-local WHILExLOOP   = 9
-local STRLITxOUT   = 10
-local EOLxOUT      = 11
-local CHARxCALL    = 12
-local BINxOP       = 13
-local UNxOP        = 14
-local NUMLITxVAL   = 15
-local BOOLLITxVAL  = 16
-local INPUTxCALL   = 17
-local RANDxCALL    = 18
-local SIMPLExVAR   = 19
-local ARRAYxVAR    = 20
-
-
 -- String forms of symbolic constants
 -- Used by printAST_parseit
 symbolNames = {
@@ -140,7 +116,7 @@ symbolNames = {
 -- Main Program
 -- *****************************
 
-local prog = "x=a[1];"
+local prog = "x=100"
 
 io.write("\n" .. prog .. "\n")
 local actualGood, actualDone, actualAST = parseit.parse(prog)

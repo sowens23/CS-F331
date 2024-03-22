@@ -39,6 +39,87 @@
 
 # Week-8
 [Top](#TOP)
+## 2024-03-22
+  ### Review
+  - **Stack-effect** notation is a Forth *convention* showing the effects of a word on the stack.
+    - WORD ( ... -- ... )  :
+      - Before and after of the stack before and after WORD is called
+        - + ( a b -- a + b)
+        - dup (a -- a a)
+    - { a b -- a + b} : 
+      - "a b" creates two local variables, sets them to first two popped values from stack
+      - "a + b" is just a comment
+  ### Forth: Allocation & Arrays
+  - **Fetch** (**@**) takes a memory adress and pushes the integer valuefound at that address: @ ( value addr -- )
+  - **Store** (**!**)  takes an integer value and a memory address. It stores the value at the address: ! (value addr -- )
+  - Forth's **dictionary** is an internal data structure holding defined words, in the order they were defined.
+  - **Exception Codes** are exceptions distinguished by integer
+    - 0 means "no exception"
+    - -4095 through -1 are assigned by the system. Some of these may be associated with error messages
+    - Positive values and values less then -4095 are available for arbitrary uses by programmers
+  - let's write a word that takes an input string and writes it backwards
+    ```fs
+    \ backtype - given a string (addr, len) print it backward.
+    : backtype  { addr len -- }
+      0 { k }
+      len 0 ?do
+        len 1 - i - to k \ k counts from len-1 down to 0
+        addr k + c@ { thechar }
+        thechar emit
+      loop
+    ;
+
+    : printrev ( -- )
+      100 { buf-size }
+      buf-size allocate throw { buf-addr }
+      cr cr
+      ." Type something: "
+      buf-addr buf-size accept { input-len }
+      cr cr
+      ." Here is what you typed: "
+      buf-addr input-len type
+      cr cr
+      ." And here it is backwards: "
+      buf-addr input-len backtype
+      cr cr
+      buf-addr free throw
+    ;
+    ```
+  - Chappell's quote of the day "You may be uninformed, but atleast you're all entertaining, and that's worth something!"
+
+## 2024-03-20
+  ### Thoughts on Assignment 5
+  - Three excercises
+    1. Run some code in Scheme
+      - Run *check_scheme.scm* in **DrRacket IDE**
+      - DrRacket expects the first time to indicate the PL
+        - #lang scheme
+      - You may need to delete this if you don't use DrRacket
+    2. Write a module in Haskell containing five things
+      - Using a skeleton file, write PA5.hs
+      - Be sure to write a function *concatEvenOdd*, it is required to be written as a **fold**
+        ```scm
+        concatEvenOdd xs = fold* ... xs  where 
+        ```
+      - consider code ``` foldl f z xs ``` where;
+        - xs is the list we are operating on
+        - z is the starting value, it is what is returned if xs is empty
+        - f is a 2-parameter function that takes a partial result and a new item, it returns the result we want for the whole list
+        - For example ``` foldl (+) 0 [3, 6, 2, 5, 3, 7] ``` returns the sum of all list items.
+      - foldr is the same as foldl, except that it works in the other direction, fold left and right.
+    3. Write a simple stand-along program in Haskell
+      - Your code will need to do some I/O tasks repeatedly, many times.
+      - Writing a function that takes I/O then calls itself tail recursively is an easy way to do this.
+      - See *squarenums.hs* for an example of how this may work.
+      - Your program does not need to be **robust**, it is allowed to crash if wrong types are input.
+  ### Forth: Words
+  - Concatenative PLs include **Forth**, **PostScript**, and **Factor**.
+  - List most concatenative PLs, Forth is **stack-based**.
+  - Forth has four stacks.
+    - Data Stack: "." for integers
+    - Floating Point Stack: "f." for floating point values
+    - Local Variable Stack: ?. for local variables?
+    - Call Stack: ?. for calls?
 ## 2024-03-18
   ### Where Are We?
   - Upon successful completion of CS 331, students should:
