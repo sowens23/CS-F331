@@ -37,6 +37,19 @@
   | [Week-13](#Week-13) | | |
   | [Week-14](#Week-14) | | |
 
+# Week-9
+[Top](#TOP)
+## 2024-03-25
+  ### Forth: Advanced Flow
+  -  **Open-Closed Principle** is when code should be open for extension, but closed for modificaitons.
+  - **Dependency Injection** is when you pass code to a module for that module to execute.
+    - This is a way to add capabilities to code without modifying the code.
+    - ANS Forth has no support for OOP, parametrized types, and first-class functions. But it allows for dependency injection through the use of *execution tokens*.
+  - A Forth **parsing word** is a word that has access to the code that comes after it. We use parsing words primarily when we want to do something with a word that does not involve immediately executing it.
+  - In Forth, a **token** is an integer that represents some component. 
+  - An **execution token** is an integer that represents the code for an executable word. Given a word's execution token, we can call the word.
+  - 
+
 # Week-8
 [Top](#TOP)
 ## 2024-03-22
