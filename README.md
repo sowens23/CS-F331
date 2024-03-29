@@ -39,9 +39,39 @@
 
 # Week-9
 [Top](#TOP)
+## 2024-03-29
+  ### Specifying Semantics
+  - Semantics is used in the following ways:
+    1. Compiler: Needs to be designed to be based on the semantics of both source PL and target PL.
+    2. Interpreter: Needs to be designed to be based on the semantics of the source PL.
+    3. Optimization: Altering codeto improve performance while keeping its semantics the same.
+    4. Verification: Using semantics to check that code performs the correct actions.
+  - **Specification** for a PL should provide enough information that a compiler and could be developed from it.
+  - A **formal specification method** is a mathematically based technique for describing something.
+    - Other methods are **informal**.
+  - **Formal semantics** refers to formal specification methods for semantics
+  - **Operational semantics** specify semantics of a PL in terms of the semantics of some other PL or abstract machine.
+  - **Denotational semantics** specify semantics by representing state & values with mathematical objects, commands, & computations by functions.
+  ### How Interpreters Work
+  - A **compiler** takes code in on PL (source) and translates it into code in another PL (target)
+  - An **interpreter** takes code in it's source PL and executes it.
+  - Compilation and interpretation are not mutually exclusive. Sometimes an interpreter contains a compiler, and sometimes there may be an **intermediate representation (IR)** that translates code into a lower-level code like byte code, before it's interpreted.
+  - Code modules that does that actual execution usually fall in one of four categories:
+    1. **Text-Based Interpreter**: This interpreter goes through the high-level source code and executes it directly, wit little prerocessing, or IR being used. These interpreters generally offer poor performance compared to other methods. 
+    2. **Tree-Walk Interpreter**: If we have parsed our source code into an Abstract Syntax Tree, then we can use a tree-walk interpreter, executing as it traverses the abstract tree.
+    3. **Virtual Machine**: The fastest way to execute code is to parse the source code into an Abstract Syntax Tree and compile it into a **byte code**, which then executes the functions at a low machine-code level. This is the most common kind of interpreter used today. This is the standard for Lua, Python, and any number of other PLs.
+    4. **JIT**: The fastest interpreter method is **Just-In-Time (JIT)**. This style of interpreter executes code compiled into byte code and is executed immediately as it's compiled into machine code. This is becoming increasingly common, and is used in **LuaJIT** and **PyPy**, and is more labor intensive.
+      - JIT divides up code to be executed into sections. Ideally, sections involve little flow of control. The byte code from sections are executed using a VM. Between section execution, control returns to the main JIT code.
+      - JIT actually stands for compiling at *optimal* time.
+      - Later in compilation, you can use information from code execution, for example **profile-based optimization** based on what portions of the code spends the most time doing.
+      - Each code section is rated **hot** to **cold** indication the priority of fast execution.
+        - Hot code is more likely to be compiled, aggressively optimized, and re-compiled with more optimization
+        - Code sections are rated by how many times they are executed, how fast they can be executed, and priority of fast execution is for that section.
+      - JIT was invented by Xerox's Palo Alto Research Center (PARC) for PL **Self**.
+  
 ## 2024-03-27
-  ### Forth: Advanced Words
-  -
+  ### Stuff
+  - Not too much done, we just spent most of our time working on a file.
 ## 2024-03-25
   ### Forth: Advanced Flow
   -  **Open-Closed Principle** is when code should be open for extension, but closed for modificaitons.
