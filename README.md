@@ -37,6 +37,99 @@
   | [Week-13](#Week-13) | | |
   | [Week-14](#Week-14) | | |
 
+# Week-10
+[Top](#TOP)
+## 2024-04-03
+  ### Review
+  - An **interpreter** takes code in its source PL and executes it.
+  - A **compiler** translates code from source to target PL.
+  ### Thoughts on Assignment 6
+  - In assignments 3, and 4, we wrote a lexer and a parser for the Nilgai PL. Assignment 6 completes the trilogy with a tree-walk interpreter that takes the kind of AST returned by the parser from Assignment 4.
+  - *interpit.interp* takes three parameters (*ast*, *state*, *util*)
+    - AST to interpret, in the format returned by parseit.parse
+    - State is a table holding the current state; Values of functions, simple variables, and arrays.
+    - Util is a table with three function members, to be called when doing string input, string output and random number generation.
+    - interpit.inter will return the new state.
+  - You will need at least four helper functions;
+    1. A function that takes the AST for a program and executes it, updateing the state appropriately.
+      ```
+      function
+        assert(type(ast) == "table")
+        assert(ast[1] == PROGRAM)
+        for i = 2, #ast do
+          interp_stmt(ast[i])
+        end
+      ```
+    2. A function that takes the AST for a statement and executes it.
+      ```
+      -- AST: {OUTPUT_STMT, {...}, {...}, {...}}
+      function interp_stmt(ast)
+        local str
+
+        assert(type(ast) == "table")
+        if ast[1] == EMPTY_STMT then
+          -- Do nothing
+        elseif ast[1] == OUTPUT_STMT then
+          for i = 2, #ast do 
+            str = eval_output_arg(ast[i])
+            util.output(str)
+          end
+        else
+          print("*** UNIMPLEMENTED STATEMENT ***")
+        end
+      end
+      ```
+    3. A function that takes the AST for an argument in an *ouput* statement, evaluates it, and returns its value as a LUA *String*
+      ```
+      function eval_output_arg(ast)
+        local result, str, val
+
+        assert(type(ast) == "table")
+        if ast[1] == STRLIT_OUT then
+          str = ast[2]
+          result = str:sub(2, str:len()-1)
+        elseif ast[1] == EOL_OUT then
+          result = "\n"
+        elseif ast[1] == CHAR_CALL then
+          print("*** UNIMPLEMENTED OUTPUT ARG ***")
+        else -- Expression
+          val = eval_expr(ast)
+          result = numToStr(val)
+        end
+
+        return result
+      end
+      ```
+    4. A function that takes the AST for a numeric expression, evaluates it, and returns as a LUA *number*
+    - These will mostly be recursive.
+      ```
+      function eval_expr(ast)
+        local str, result, val
+      
+        assert(type(ast) == "table")
+        if ast[1] == NUMLIT_VAL then
+          result = strToNum(ast[2])
+        else
+          print("*** UNIMPLEMENTEd EXPRESSION ***")
+          result = 42 -- DUMMY VALUE
+        end
+
+        return result
+      end
+      ```
+  ### PL Feature: Reflection
+  - **Reflection** in a computer program refers to the ability of the program to deal with its own code at runtime: examining the code, looking at its properties, possibly modifying it, and executing the modified code.
+  - Machine code usually supports reflection, in the form of **self-modifying** code. Today this is generally frowned upon.
+  - In Lisp-family PLs runtime code transformations are normal parts of programming. constructs **macros** to make programming convenient.
+## 2024-04-01
+  - An interpreter must store program **state**: variable values, the call stack, etc.
+  - **Runtime system** is additional code that programs will use while running.
+    - Program startup/initialization and shutdown.
+    - Memory management
+    - Low-level I/O
+    - Interfaces to other OS functionality: threads, communication processes
+  - **Mutable** means changeable.
+
 # Week-9
 [Top](#TOP)
 ## 2024-03-29
