@@ -40,6 +40,45 @@
 # Week-10
 [Top](#TOP)
 ## 2024-04-03
+  ### PL Category: Lisp-Family PLs
+  - Mathematical formalism for describing computation came in a few forms.
+    - **Symbolic Expression** or **S-expression** is either:
+      - An **atom** (A word)
+      - A **pair** (two S-expressions separated by a dot and eclosed in parentheses)
+      - Or a **nil** (an empty pair of parenthesis)
+      - (THIS . (IS . (AN . ((S . (EXPRESSION , ())) . ()))))
+  - This was developed by John McCarthy an MIT professor in 1950s.
+  - This was picked up by Dartmouths Steve Russell who speculated that this if implemented as a computer program, would be an interpreter for a PL.
+  - In 1958, Russell wrote a language on an IBM 704 and it was known as **Lisp**, for LISt Processor.
+  - Lisp and associated PLs are noted for their excellent support for reflection.
+  - In 1960s, **Logo**, a lisp dialect was released to teach programming concepts.
+  - **Lisp machines** are computers aimed at running Lisp.
+  - **Common Lisp** was produced in 1984 as a unified Lisp standard, an ANSI Standard was published in 1994
+  - **Clojure** "Closure" is a Lisp-family PL for the Java Virtual Machine (JVM), originally written by Rich Hickey in 2007, and is still actively developed.
+  ### Intro to Scheme
+  - Scheme is a Lisp-family PL with a minimalist design philosophy
+    ```
+    (define (hello-world)
+      (begin
+        (display "Hello, world!")
+        (newline)
+        )
+      )
+  ```
+  - When is a list is evaluated, the value of the first item is usually a **procedure** (think "funciton"); other items are it's arguments.
+  - Type system is similar to Lua
+    - Typing is Dynamic
+    - Typing is implicit, Type annotations are not typically used.
+    - Type checking is structural. Duck typing is used.
+    - High level of type safety. Operations on invalid types are not allowed, implicit type conversions are rare.
+    - There is a fixed set of types.
+      - Scheme has about 36.
+  - **Pair** and **null** are heavily used types that construct lists.
+  - Values of other types are **atoms**: 
+    - Booleans (#t, #f), Strings ("Hello"), Characters (#\a)
+    - Symbols (abc x a-long-symbol), Number (10), Procedure types (usually bound to names)
+  - TODO: fibo.scheme
+## 2024-04-03
   ### Review
   - An **interpreter** takes code in its source PL and executes it.
   - A **compiler** translates code from source to target PL.
