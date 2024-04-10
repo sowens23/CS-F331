@@ -39,6 +39,102 @@
 
 # Week-10
 [Top](#TOP)
+## 2024-04-10
+  ### Review
+  - **Macros** are similar to **procedures**, but they do not follow the general rules.
+    - Macros generally, will not evaluate it's parameters, it will take them as they are instead.
+    - ``` (define abc 42) ``` is a macro, where it takes abc without evaluating it, and then defines it as 42, which is evaluated, because that's how this macro works.
+    - ``` (quote (1 2 3)) ``` is a macro, it takes the argument without evaluating it, and outputs it. It works the same way as ``` '(1 2 3) ```, the single quote is shorthand for the quote macro.
+  - **Procedures** are just basically functions.
+    - ``` (eval '(+ 2 3)) ``` eval is a procedure, that actually evaluates the argument, and then evaluates the result.
+    - ``` (apply + '(2 3)) ``` is a variation of "eval" that takes a procedure and a list of arguments, and calls the procedure with the arguments and returns the result.
+  - A **predicate** is a function returning a boolean.
+  - A **Closure** is a function that carries with it (in some sense) the environment in which it was created.
+  ### Scheme: Evaluation
+  - When evaluatio of an expression leads to a call to a Scheme procedure, the call is made in an enviornment that includes variables in the environment the procedure  was defined in. In short, a Scheme procedure is a closure. The things we have done with closures in other PLs work just fine in Scheme
+  - Write some code that uses a closure 
+    ```
+    #lang scheme
+
+    (define (makemult k)
+      (cond 
+        [(number? k) (lambda (x) (* k x))]
+        [else (error "makemult: arg is not a number")]
+      )
+    )
+    ```
+  - Write a Scheme procedure that inputs a number and prints it's square
+    ```
+    #lang scheme
+    (define (sqr-interact)
+      (begin
+        (display "Type a number: ")
+        (let (
+            [line (read-line)]
+            [num (string->number line)]
+            )
+          (cond 
+            [num (begin
+                (display "Your number squared: ")
+                (display (* n n))
+                (newline)
+                )
+            ]
+            [else (display "You did not type a number!\n")]
+          )
+        )
+      )
+    )
+    ```
+  - Scheme evaluation is **eager**.
+  - A **promise** is a wrapper around an expression that leaves the expression unevaluated until the promise is *forced*.
+    - When we **force** a promise, the expresion is evaluated and the resulting value is stored in the promise and returned. A promise can be forced one to be evaluated, then it only returns the result, and does not evaluate again.???
+    - Create a promise using the macro *delay*
+      ``` (define pp (delay (* 20 5))) ```
+    - The type-checking predicate or promises is *promise?*
+      ``` (promise? pp) ``` = #t
+    - Force a promise using the procedure *force*
+      ``` (force pp) ``` = 100
+## 2024-04-08
+  - Lawlor is teaching today
+  ### Review
+  - Functions in Lisp are called **procedures**
+  ### Scheme: Basics
+  - Below is a while loop, but because we're programming in Scheme, it's recursive.
+    ```scm
+    (define (A_while A)
+      (if (> A 10)
+        (begin (display A) (newline) (A_while (- A 3)))
+        (void)
+      )
+    )
+    ```
+    - Call this using "A_while 18". Outputs: 18, 15, 12
+  - This is how we can calculate the length of a list
+    ```scm
+    
+    ```
+
+# Week-10
+[Top](#TOP)
+## 2024-04-05
+  ### Lots of reviewing
+  - Nothing much was new, we just programmed in scheme.
+  - This is syntax in Lua
+    ```Lua
+    if x == 3 then
+      io.write("three")
+    else
+      io.write("other")
+    end
+    ```
+  - This is syntax in Scheme
+    ```scm
+    (if (= x 3)
+      (display "three")
+      (display "other")
+      )
+    ```
 ## 2024-04-03
   ### PL Category: Lisp-Family PLs
   - Mathematical formalism for describing computation came in a few forms.
@@ -57,7 +153,7 @@
   - **Clojure** "Closure" is a Lisp-family PL for the Java Virtual Machine (JVM), originally written by Rich Hickey in 2007, and is still actively developed.
   ### Intro to Scheme
   - Scheme is a Lisp-family PL with a minimalist design philosophy
-    ```
+  ```
     (define (hello-world)
       (begin
         (display "Hello, world!")
