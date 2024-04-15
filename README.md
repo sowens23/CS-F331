@@ -38,11 +38,77 @@
   | [Week-14](#Week-14) | | |
   | [Week-15](#Week-15) | | |
 
+# Week-13
+[Top](#TOP)
+## 2024-04-15
+  ### Review
+  - Scheme macros discussed
+    - define; lambda; quote; delay;
+  ### Scheme: Macros
+  - A **lambda** function allows us to evaluate to a procedure or to write an expression without giving it a name or using *define*
+    ```
+    (define (sqr x) (* x x))
+    (define sqr (lambda (x) (* x x))) ; same as above 
+    ((lambda (x) (* x x)) 5)          ; no name required. Outputs 25.
+    ```
+  - **Reflection** is the ability of a program to deal with it's own code at runtime.
+  - **Fexpr** are a version of reflection, that is like a procedure that takes unevaluated arguments and deals with the arguments' ASTs, rather than their values.
+    - Used earlier than mid-1960's before we started using *macros*
+  - **Macros** were adopted to transform code during execution.
+  - **Pattern-based macros** are used often to match a pattern and transform code, then evaluate.
+    - Ie. If pattern looks like this, then transform it to this and evaluate.
+  - **Hygienic macros** are macros whose interactions between identifiers inside, and outside the macros are strictly limited in the same way as a procedure.
+  - Macros in Scheme are called **syntax constructions**
+  - A macro in Scheme can be defined as so;
+    - It usually looks like this: ```(define-syntax-rule (PATTERN) TEMPLATE)```
+    - This will define a macro, that works exactly the same way as ``` (quote x) ``` which is the same as ``` '(x) ```
+    ```
+    (define-syntax-rule (myquote x) 
+    'x
+    )
+    (define-syntax-rule (myquote2 x y) 
+    `(x y)
+    )
+    ```
+  - Let's make a for loop, using a pattern-based macro, here is the template we will use
+    ```
+    ; For-Loop1 defined as (define-syntax-rule (for-loop1) (start end) body)
+    ; Usage (forloop1 (start end) (body))
+    ; Usage (for-loop1 (1 10) (lambda (i) (begin (display (i * *)) (newline) )))
+    
+    (define-syntax-rule (for-loop1 (start end) body)
+      (let loop
+        [(loop-count start)]
+        (cond
+          [(> loop-counter end) (void)]
+          [else                 (begin
+                                  (body loop-counter)
+                                  (loop (+ loop-counter 1)))]
+        )
+      )
+    )
+    ```
+    ```
+    ; For-loop2 written as (for-loop2 (i start end) body)
+    ; Usage: (for-loop2 (i 1 10) (display (* i i) (newline)))
+    (define-syntax-rule (for-loop2 (var start end) . body)
+      (let loop
+        [(var start)]
+        (cond 
+          [(> var end) (void)]
+          [else        begin (
+                          (begin . body)
+                          (loop (+ var 1)))]
+        )
+      )
+    )
+    ```
+
 # Week-12
 [Top](#TOP)
 ## 2024-04-12
   ### Scheme: Data
-  - 
+  - Not too much new stuff. Just code demos
 ## 2024-04-10
   ### Review
   - **Macros** are similar to **procedures**, but they do not follow the general rules.
