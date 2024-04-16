@@ -1,25 +1,20 @@
--- interpit.lua
--- Spencer Baysinger
--- 2024-04-15
+-- Secret message #5:
 
+-- What do you call a fallen tree that has lost its amateur status?
+
+-- true.
+
+
+-- interpit.lua  SKELETON
+-- Glenn G. Chappell
+-- Started: 2024-04-02
+-- Updated: 2024-04-03
+--
 -- For CS 331 Spring 2024
-
--- Assignment 6, part A - Running a Prolog Program
-    -- Secret message:
-    -- What do you call a fallen tree that has lost its amateur status?
-    -- true.
-
--- Assignment 5, part B - Haskell Variables & Functions
--- This assignment we will demonstrate interpreter knowledge by developing the interpreter for Nilgai programming language, when combined with my lexer and parser, will result in a complete interpreter that can execute Nilgai programs. 
-
--- File based on interpit.lua (skeleton) written by Professor Glenn Chappell
-    -- interpit.lua (SKELETON)
-    -- Glenn G. Chappell
-    -- Started: 2024-04-02
-    -- Updated: 2024-04-03
-
 -- Interpret AST from parseit.parse
 -- Solution to Assignment 6, Exercise B
+
+
 -- *** To run a Nilgai program, use nilgai.lua, which uses this file.
 
 
@@ -216,7 +211,6 @@ function interpit.interp(ast, state, util)
 
     -- interp_stmt
     -- Given the ast for a statement, execute it.
-    -- 8 statements: Empty statement, Output statements, Return statements, Assignment statement, function call, function definition, If statement, and while loop.
     function interp_stmt(ast)
         local str, funcname, funcbody
 
@@ -228,10 +222,10 @@ function interpit.interp(ast, state, util)
                 str = eval_output_arg(ast[i])
                 util.output(str)
             end
-        elseif ast[1] == RETURN_STMT then
-            print("*** TODO RETURN STATEMENT")
-        elseif ast[1] == ASSN_STMT then
-            print("*** TODO ASSIGNMENT STATEMENT")
+        elseif ast[1] == FUNC_DEF then
+            funcname = ast[2]
+            funcbody = ast[3]
+            state.f[funcname] = funcbody
         elseif ast[1] == FUNC_CALL then
             funcname = ast[2]
             funcbody = state.f[funcname]
@@ -239,16 +233,8 @@ function interpit.interp(ast, state, util)
                 funcbody = { PROGRAM }
             end
             interp_program(funcbody)
-        elseif ast[1] == FUNC_DEF then
-            funcname = ast[2]
-            funcbody = ast[3]
-            state.f[funcname] = funcbody
-        elseif ast[1] == IF_STMT then
-            print("*** TODO IF STATEMENT")
-        elseif ast[1] == WHILE_LOOP then
-            print("*** TODO WHILE LOOP")
         else
-            print("*** TODO STATEMENT?")
+            print("*** UNIMPLEMENTED STATEMENT")
         end
     end
 
