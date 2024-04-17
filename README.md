@@ -40,6 +40,92 @@
 
 # Week-13
 [Top](#TOP)
+## 2024-04-17
+  ### Review
+  - Scheme supports reflection through **macros**: code transormations applied during execution.
+    - Scheme macros covered: define, lambda, quote, delay, if, cond, let, let*, define-syntax, define-syntax-rules.
+  - In a **pattern-based macro**, code that matches a pattern is transformed and then evaluated as usual.
+  - **Hygienic macros** are standard in Scheme, and they strictly limit interactions between indentifiers inside a macro as well as those outside, as much as a procedure does.
+    - Scheme macro facilities: *define-syntax-rule*, *define-syntax + syntax-rules*, and *define-syntax + syntax-case*
+    - Example: ```(define-syntax-rule (PATTERN) TEMPLATE)```
+      ```scm
+      (define-syntax-rule (myquote x)
+        `x
+      )
+      ```
+  ### Scheme: Macros
+  ##### Multiple-Pattern Macros, Keywords in Macros, and Fancier Macros 
+  - We can write pattern-based macros that allow for multiple patterns. Note that method 1 is shorthand for method 2.
+    1. (define-syntax-rule (PATTERN) TEMPLATE)
+    2. (define-syntax IDENTIFIER (syntax-rules () [(PATTERN) TEMPLATE]))
+    - Note that the first list after "syntax-rules" is mysterious, and we will leave this empty for now. (It's for keywords)
+      - Keywords in a pattern match, only match that exact word.
+    - Think of PATTERN as starting with an identifier, leave the first item empty "_", or same as IDENTIFIER.
+  - *syntax-rules* allows for multiple pattern matching. Below is how to match two patterns
+    ```scm
+    (define-syntax IDENTIFIER
+      (syntax-rules ()
+        [(PATTERN1) TEMPLATE1]
+        [(PATTERN2) TEMPLATE2]
+      )
+    )
+    ```
+  - *syntax-rules* allows for 'n' number of pattern matching. Below is how to match undefined patterns
+    ```scm
+    -- SYNTAX EXAMPLE
+    (define-syntax IDENTIFIER
+      (syntax-rules (KEYWORD1 ... KEYWORDm)
+        [(PATTERN1) TEMPLATE1]
+        ...
+        [(PATTERN2) TEMPLATE2]
+      )
+    )
+
+    -- ACTUAL EXAMPLE
+    (define-syntax defbunch
+      (syntax-rules ()
+        [(defbunch) 
+          (void) -- Call defbunch with nothing, return nothing
+        ]
+        [(defbunch s1 e1 . rest)
+          (begin
+            (define s1 e1)
+            (defbunch . rest)
+          )
+        ]
+      )
+    )
+    ```
+  - Write a macro that uses a keyword (a for-each loop)
+  ```scm
+  -- Use: (for-each1 i in (2 4 10 11) (display n) (newline))
+  -- This will not evaluate expressions? So it needs to be revised.
+  (define-syntax  for-each1
+    (syntax-rules (in)
+      [(for-each1 var in () . body)
+        (void)
+      ]
+      [(for-each1 var in (head . tail) . body)
+        (begin
+          (let (
+              [var head]
+            )
+            (begin . body)
+          )
+          (for-each1 var in tail . body)
+        )
+      ]
+    )
+  )
+  ```
+  ### PL Feature: Execution Model
+  - In every language there is always something that drives the execution of a program. There is a **task**, and a **strategy** to complete said task.
+    - In c++, the task is completeling a call to main.
+    - In Lua, the task is executing code at global scope.
+    - In Haskell, the task is evaluating some expression, perhaps main.main.
+  - In Prolog, to **unify** two constructions means to make them the same by **binding** variables as necessary.
+  - Execution is driven by the task of answering some **query**.
+    - The strategy is to unify something we wish to prove true with something known to be true. In Prolog, we can declare a **fact**.
 ## 2024-04-15
   ### Review
   - Scheme macros discussed
