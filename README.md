@@ -40,6 +40,97 @@
 
 # Week-13
 [Top](#TOP)
+## 2024-04-19
+  ### Review
+  - To **unify** two constructions means to make them the same by **binding** variables as necessary.
+  - In **Prolog** PL execution is driven by the task of answering some **query**
+  ### PL Category: Logic PL
+  - In the late 1960s, Stanford researcher Cordell Green proposed representing a computer program in terms of logical statements. This programming paradigm is known as **logic programming**.
+  - In logic programming, a computer can be thought of as a **knowledge base**. Containing two kinds of knowledge
+    - **Facts**: Statements that are known to be true
+    - **Rules**: Ways to find other true statements from those known
+  - Execution is driven by a **query**: essentially a question, answered with facts and rules.
+  - Logic programming has nonotion of **falsehood**. There are true statements, and ones that can't be proven to be true.
+  - Logic programming is less about **truth** and more about **provability**
+  - Let's demo some logic programming
+    - Facts
+      - Gil is a child of Ernest
+      - Glenn is a child of Gil
+    - Rules
+      - If A is a child of B, and B is a child of C, then A is a grandchild of C
+    - Queries
+      - Is Glenn a grandchild of Ernest? : Yes - Provable
+      - Is Ernest a grandchild of Glenn? : No  - Not Provable
+      - Is Glenn a grandchild of Bob?    : No  - Not Provable
+  - In 1970s, programming languages based on logic programming concepts began to appear: **Prolog**, **Mercury**, **Oz**, and **Godel**.
+    - Creating cractical pure logic programming languages is difficult, and most end up cheating logic by including constructions that are not logical in nature.
+  - A typical logic PL we have:
+    - Facts, Rules, Queries, a **Goal** to prove queries true, during execution **sub-goals**, A source file, **negation** of non-provable queries, **Unification** for proof, typing is **dynamic** and **implicit**.
+  ### Intro to Prolog
+  - In 1970's the developement for the first logic PL was led by Alain Colmeraur with a group at U. of Aix-Marseille (France) based on Cordell Green's ideas.
+    - This language is called **ProLog** which stands for "PROgrammation en LOGique"
+  - In 1987 a group at U. of Amsterdam released a Prolog implementation called **SWI-Prolog**
+  - In 1995, an ISO standard for Prolog was released, which SWI-Prolog follows
+  - In 1996 **gprolog** was made for the GNU Project.
+  - At some point Microsoft developed **Visual Prolog** which is the most successful. It's supports static typing, and object-oriented programming.
+  - Prolog is a logic programming language, driven by queries, to establish a goal. 
+  - Prolog attempts to unify using **backtracking search**
+  - From here on, Prolog refers to SWI-Prolog
+  - Prolog **predicates** are a function that returns true or false. Otherwise prolog has no functions
+  - Prolog syntax is **free-form**, indentation is not significant, newlines are treated like blanks (mostly)
+  - Prolog's type system is similar to Lua: dynamic, implicit, duck typing, new types cannot be created.
+  - Prolog does not have a clear standard on what a *type* is.
+  - Prolog basic entity is the **term**: Terms are divided into 4 categories: **number**, **atom**, **variable**, and **compound term**.
+  1. A number is a number, which might call **subtypes**: **integer** and **float**.
+  2. An atom is a name, and are written in one of four ways: 
+    - Atoms are used as names of predicates and operators
+    - They function similar to string literals
+    - An atom can also simply be itself (ernest)
+    1. A string ("asd")
+    2. A string prepended with a backslash("\asd")
+    3. An arbitrary sequence of characters in single quotes ('asd!\n')
+    4. A sequence of one or more of 17 special characters [#$&*+-./:<=>?@\^~]
+  3. A **variable** can be bound to a value. Variables are either **free** or **bound**. 
+    - Bound variables are treated as a fixed value.
+    - When Prolog tries to unify two terms, it does a **backtracking search**, which can undo binding of bound variables.
+  4. A **compound term** looks like a function call. "foo7(Ax, BB)". Known as a **functor**, above "foo7" is the functor, and Ax, BB are it's arguments.
+  - Filenames: .pro, or .pl
+  - Let's write HelloWorld.pl
+    ```pl
+    % This is a comment
+    % HelloWorld.pl
+    % Spencer Baysinger
+    % 2024-04-19
+    % Learning in Prolog
+
+    child(glenn, gil).
+    child(gil, ernest).
+    child(gil, frank).
+    grandchild(A, C) :- child(A, B), child(B, C).
+
+    % Load: [HelloWorld]
+    % Output: true.
+
+    % Input: child(glenn, gil)
+    % Output: true.
+    
+    % Input: child(X, gil).
+    % Output: X = glenn.
+
+    % Input: child(X, gil).
+    % Output: X = ernest.
+              X = frank
+
+    % Write Hello World in Main
+    % Main is true, if write is true, and if nl. is true
+    % We know these 2 lines in main are true, so main is true.
+    main :-
+      write('Hello, world!'),
+      nl.
+
+    
+    ```
+  - See fibo.pl to checkout Fibonacci Sequence in Prolog.
 ## 2024-04-17
   ### Review
   - Scheme supports reflection through **macros**: code transormations applied during execution.
