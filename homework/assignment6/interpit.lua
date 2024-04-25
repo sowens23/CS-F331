@@ -9,8 +9,7 @@
     -- What do you call a fallen tree that has lost its amateur status?
     -- true.
 
--- Assignment 5, part B - Haskell Variables & Functions
--- This assignment we will demonstrate interpreter knowledge by developing the interpreter for Nilgai programming language, when combined with my lexer and parser, will result in a complete interpreter that can execute Nilgai programs. 
+-- Bruce Smith helped me sort through my Binary/Unary functionality.
 
 -- File based on interpit.lua (skeleton) written by Professor Glenn Chappell
     -- interpit.lua (SKELETON)
@@ -22,19 +21,15 @@
 -- Solution to Assignment 6, Exercise B
 -- *** To run a Nilgai program, use nilgai.lua, which uses this file.
 
-
 -- *********************************************************************
 -- Module Table Initialization
 -- *********************************************************************
 
-
 local interpit = {}  -- Our module
-
 
 -- *********************************************************************
 -- Symbolic Constants for AST
 -- *********************************************************************
-
 
 local PROGRAM      = 1
 local EMPTY_STMT   = 2
@@ -57,11 +52,9 @@ local RAND_CALL    = 18
 local SIMPLE_VAR   = 19
 local ARRAY_VAR    = 20
 
-
 -- *********************************************************************
 -- Utility Functions
 -- *********************************************************************
-
 
 -- numToInt
 -- Given a number, return the number rounded toward zero.
@@ -74,7 +67,6 @@ local function numToInt(n)
         return math.ceil(n)
     end
 end
-
 
 -- strToNum
 -- Given a string, attempt to interpret it as an integer. If this
@@ -94,7 +86,6 @@ local function strToNum(s)
     end
 end
 
-
 -- numToStr
 -- Given a number, return its string form.
 local function numToStr(n)
@@ -102,7 +93,6 @@ local function numToStr(n)
 
     return tostring(n)
 end
-
 
 -- boolToInt
 -- Given a boolean, return 1 if it is true, 0 if it is false.
@@ -115,7 +105,6 @@ local function boolToInt(b)
         return 0
     end
 end
-
 
 -- astToStr
 -- Given an AST, produce a string holding the AST in (roughly) Lua form,
@@ -167,9 +156,8 @@ function astToStr(x)
     end
 end
 
--- operations
 -- Define a table for binary operations
-local operations = {
+local binaryoperations = {
     ["and"] = function(x, y) return (x ~= 0 and y ~= 0) and 1 or 0 end,
     ["or"]  = function(x, y) return (x ~= 0 or y ~= 0) and 1 or 0 end,
     ["=="]  = function(x, y) return (x == y) and 1 or 0 end,
@@ -185,10 +173,16 @@ local operations = {
     ["%"]   = function(x, y) return (y ~= 0) and numToInt(x % y) or 0 end,
 }
 
+-- Define a table for unary operations
+local unaryOperations = {
+    ["-"] = function(x) return -x end,
+    ["+"] = function(x) return x end,
+    ["not"] = function(x) return (x == 0) and 1 or 0 end,
+}
+
 -- *********************************************************************
 -- Primary Function for Client Code
 -- *********************************************************************
-
 
 -- interp
 -- Interpreter, given AST returned by parseit.parse.
@@ -212,13 +206,11 @@ function interpit.interp(ast, state, util)
     -- versions of state and until may be used. The function-wide
     -- version of state may be modified as appropriate.
 
-
     -- Forward declare local functions
     local interp_program
     local interp_stmt
     local eval_output_arg
     local eval_expr
-
 
     -- interp_program
     -- Given the ast for a program, execute it.
@@ -229,7 +221,6 @@ function interpit.interp(ast, state, util)
             interp_stmt(ast[i])
         end
     end
-
 
     -- interp_stmt
     -- Given the ast for a statement, execute it.
@@ -284,7 +275,7 @@ function interpit.interp(ast, state, util)
                 arrayname = asttemp[2]
                 arrayindex = eval_expr(asttemp[3])
                 state.a[arrayname] = state.a[arrayname] or {}
-                state.a[arrayname][arrayindex] = arrayval
+                state.a[arrayname][arrayindex] = assignvalue
             end
 
         -- [7/8] Handle if statement
@@ -320,7 +311,6 @@ function interpit.interp(ast, state, util)
         end
     end
 
-
     -- eval_output_arg
     -- Given the AST for an output argument, evaluate it and return the
     -- value, as a string.
@@ -341,16 +331,16 @@ function interpit.interp(ast, state, util)
             if val == nil or val < 0 or val > 255 then
                 val = 0
             end
+            result = string.char(val)
 
         -- Expression
-        else  -- Expression
+        else
             val = eval_expr(ast)
             result = numToStr(val)
         end
 
         return result
     end
-
 
     -- eval_expr
     -- Given the AST for an expression, evaluate it and return the
@@ -401,54 +391,39 @@ function interpit.interp(ast, state, util)
             result = var[index] or 0
 
         -- [8/9] UN_OP
-        elseif ast[1] == UN_OP then
+        elseif ast[1][1] == UN_OP then
             op1 = ast[1][2]
             opand1 = eval_expr(ast[2])
+            opfunc = unaryOperations[op1]
             if op1 == "-" then
                 result = -opand1
             elseif op1 == "+" then
                 result = opand1
             elseif op1 == "not" then
-                if opand1 == 0 then
-                    result = 1
-                else
-                    result = 0
-                end
+                result = (opand1 == 0) and 1 or 0
             end
 
         -- [9/9] BIN_OP
-        elseif ast[1] == BIN_OP then
+        elseif ast[1][1] == BIN_OP then
             op1 = ast[1][2]
             opand1 = eval_expr(ast[2])
             opand2 = eval_expr(ast[3])
-            opfunc = operations[op1]
-        
+            opfunc = binaryoperations[op1]
             if opfunc then
                 result = opfunc(opand1, opand2)
-            else
-                print("*** EVAL_EXPR: UNRECOGNIZED OPERATOR ***")
-                result = nil
             end
-
-        else
-            print("*** EVAL_EXPR: ERROR ***")
-            result = 404  -- DUMMY VALUE
         end
-
         return result
     end
-
 
     -- Body of function interp
     interp_program(ast)
     return state
 end
 
-
 -- *********************************************************************
 -- Module Table Return
 -- *********************************************************************
-
 
 return interpit
 
