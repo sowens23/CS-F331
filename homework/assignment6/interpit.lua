@@ -167,6 +167,23 @@ function astToStr(x)
     end
 end
 
+-- operations
+-- Define a table for binary operations
+local operations = {
+    ["and"] = function(x, y) return (x ~= 0 and y ~= 0) and 1 or 0 end,
+    ["or"]  = function(x, y) return (x ~= 0 or y ~= 0) and 1 or 0 end,
+    ["=="]  = function(x, y) return (x == y) and 1 or 0 end,
+    ["!="]  = function(x, y) return (x ~= y) and 1 or 0 end,
+    ["<"]   = function(x, y) return (x < y) and 1 or 0 end,
+    ["<="]  = function(x, y) return (x <= y) and 1 or 0 end,
+    [">"]   = function(x, y) return (x > y) and 1 or 0 end,
+    [">="]  = function(x, y) return (x >= y) and 1 or 0 end,
+    ["+"]   = function(x, y) return x + y end,
+    ["-"]   = function(x, y) return x - y end,
+    ["*"]   = function(x, y) return x * y end,
+    ["/"]   = function(x, y) return (y ~= 0) and numToInt(x / y) or 0 end,
+    ["%"]   = function(x, y) return (y ~= 0) and numToInt(x % y) or 0 end,
+}
 
 -- *********************************************************************
 -- Primary Function for Client Code
@@ -176,17 +193,17 @@ end
 -- interp
 -- Interpreter, given AST returned by parseit.parse.
 -- Parameters:
---   ast    - AST constructed by parseit.parse
---   state  - Table holding Nilgai variables & functions
---            - AST for function xyz is in state.f["xyz"]
---            - Value of simple variable xyz is in state.v["xyz"]
---            - Value of array item xyz[42] is in state.a["xyz"][42]
---   util   - Table with 3 members, all functions:
---            - incall() inputs line, returns string with no newline
---            - outcall(str) outputs str with no added newline
---              To print a newline, do outcall("\n")
---            - random(n), for an integer n, returns a pseudorandom
---              integer from 0 to n-1, or 0 if n < 2.
+--   ast        - AST constructed by parseit.parse
+--   state      - Table holding Nilgai variables & functions
+--              - AST for function xyz is in state.f["xyz"]
+--              - Value of simple variable xyz is in state.v["xyz"]
+--              - Value of array item xyz[42] is in state.a["xyz"][42]
+--   util       - Table with 3 members, all functions:
+--              - incall() inputs line, returns string with no newline
+--              - outcall(str) outputs str with no added newline
+--                  To print a newline, do outcall("\n")
+--              - random(n), for an integer n, returns a pseudorandom
+--                  integer from 0 to n-1, or 0 if n < 2.
 -- Return Value:
 --   state, updated with changed variable values
 function interpit.interp(ast, state, util)
@@ -216,22 +233,32 @@ function interpit.interp(ast, state, util)
 
     -- interp_stmt
     -- Given the ast for a statement, execute it.
-    -- 8 statements: Empty statement, Output statements, Return statements, Assignment statement, function call, function definition, If statement, and while loop.
     function interp_stmt(ast)
-        local str, funcname, funcbody
+        local str
+        local funcname, funcbody
+        local assignname, assignvalue, asttemp
+        local arrayname, arrayval, arrayindex
+        local condition, loopcount
 
         assert(type(ast) == "table")
+        -- [1/8] Handle empty statement 
         if ast[1] == EMPTY_STMT then
             -- Do nothing
+
+        -- [2/8] Handle output statement 
         elseif ast[1] == OUTPUT_STMT then
             for i = 2, #ast do
                 str = eval_output_arg(ast[i])
                 util.output(str)
             end
-        elseif ast[1] == RETURN_STMT then
-            print("*** TODO RETURN STATEMENT")
-        elseif ast[1] == ASSN_STMT then
-            print("*** TODO ASSIGNMENT STATEMENT")
+
+        -- [3/8] Handle function definition 
+        elseif ast[1] == FUNC_DEF then
+            funcname = ast[2]
+            funcbody = ast[3]
+            state.f[funcname] = funcbody
+
+        -- [4/8] Handle function call 
         elseif ast[1] == FUNC_CALL then
             funcname = ast[2]
             funcbody = state.f[funcname]
@@ -239,16 +266,57 @@ function interpit.interp(ast, state, util)
                 funcbody = { PROGRAM }
             end
             interp_program(funcbody)
-        elseif ast[1] == FUNC_DEF then
-            funcname = ast[2]
-            funcbody = ast[3]
-            state.f[funcname] = funcbody
+
+        -- [5/8] Handle return statement
+        elseif ast[1] == RETURN_STMT then
+            state.v["return"] = eval_expr(ast[2])
+
+        -- [6/8] Handle assignment statement 
+        elseif ast[1] == ASSN_STMT then
+            asttemp = ast[2]
+            assignvalue = eval_expr(ast[3])
+
+            if asttemp[1] == SIMPLE_VAR then
+                assignname = asttemp[2]
+                state.v[assignname] = assignvalue
+
+            elseif asttemp[1] == ARRAY_VAR then
+                arrayname = asttemp[2]
+                arrayindex = eval_expr(asttemp[3])
+                state.a[arrayname] = state.a[arrayname] or {}
+                state.a[arrayname][arrayindex] = arrayval
+            end
+
+        -- [7/8] Handle if statement
         elseif ast[1] == IF_STMT then
-            print("*** TODO IF STATEMENT")
+            local executed = false
+
+            -- Check 'if' and all 'elseif' conditions
+            for i = 2, #ast - 1, 2 do
+                if eval_expr(ast[i], state, util) ~= 0 then
+                    interp_program(ast[i + 1])
+                    executed = true;
+                    break
+                end
+            end
+
+            -- Handle 'else' part, which should be the last block if present
+            if not executed and #ast % 2 == 0 then
+                interp_program(ast[#ast])
+            end
+        
+        -- [8/8] Handle while loop
         elseif ast[1] == WHILE_LOOP then
-            print("*** TODO WHILE LOOP")
+            condition = ast[2]
+            funcbody = ast[3]
+
+            -- Continue to check loop condition
+            while eval_expr(condition) ~= 0 do
+                interp_program(funcbody)
+            end
+
         else
-            print("*** TODO STATEMENT?")
+            print("*** INTERP_STMT(AST) ERROR ***")
         end
     end
 
@@ -260,14 +328,21 @@ function interpit.interp(ast, state, util)
         local result, str, val
 
         assert(type(ast) == "table")
+        -- String
         if ast[1] == STRLIT_OUT then
             str = ast[2]
             result = str:sub(2, str:len()-1)
         elseif ast[1] == EOL_OUT then
             result = "\n"
+
+        -- Character
         elseif ast[1] == CHAR_CALL then
-            print("*** UNIMPLEMENTED OUTPUT ARG")
-            result = "ZZZZZ"  -- DUMMY VALUE
+            val = tonumber(eval_expr(ast[2]))
+            if val == nil or val < 0 or val > 255 then
+                val = 0
+            end
+
+        -- Expression
         else  -- Expression
             val = eval_expr(ast)
             result = numToStr(val)
@@ -281,14 +356,83 @@ function interpit.interp(ast, state, util)
     -- Given the AST for an expression, evaluate it and return the
     -- value, as a number.
     function eval_expr(ast)
-        local result
+        local result, var, val, index
+        local funcname, funcbody
+        local opand1, opand2, op1, op2, op3, opfunc
 
         assert(type(ast) == "table")
+
+        -- [1/9] Numeric literal
         if ast[1] == NUMLIT_VAL then
             result = strToNum(ast[2])
+
+        -- [2/9] Variable
+        elseif ast[1] == SIMPLE_VAR then
+            var = ast[2]
+            result = state.v[var] or 0
+
+        -- [3/9] Function Call
+        elseif ast[1] == FUNC_CALL then
+            funcname = ast[2]
+            funcbody = state.f[funcname] or { PROGRAM }
+            interp_program(funcbody)
+            result = state.v["return"] or 0
+
+        -- [4/9] Rand
+        elseif ast[1] == RAND_CALL then
+            result = util.random(eval_expr(ast[2]))
+
+        -- [5/9] User Input 
+        elseif ast[1] == INPUT_CALL then
+            result = strToNum(util.input())
+
+        -- [6/9] Boolean
+        elseif ast[1] ==  BOOLLIT_VAL then
+            if ast[2] == "true" then
+                result = 1
+            else
+                result = 0
+            end
+
+        -- [7/9] Array Variable
+        elseif ast[1] == ARRAY_VAR then
+            var = state.a[ast[2]] or {}
+            index = eval_expr(ast[3])
+            result = var[index] or 0
+
+        -- [8/9] UN_OP
+        elseif ast[1] == UN_OP then
+            op1 = ast[1][2]
+            opand1 = eval_expr(ast[2])
+            if op1 == "-" then
+                result = -opand1
+            elseif op1 == "+" then
+                result = opand1
+            elseif op1 == "not" then
+                if opand1 == 0 then
+                    result = 1
+                else
+                    result = 0
+                end
+            end
+
+        -- [9/9] BIN_OP
+        elseif ast[1] == BIN_OP then
+            op1 = ast[1][2]
+            opand1 = eval_expr(ast[2])
+            opand2 = eval_expr(ast[3])
+            opfunc = operations[op1]
+        
+            if opfunc then
+                result = opfunc(opand1, opand2)
+            else
+                print("*** EVAL_EXPR: UNRECOGNIZED OPERATOR ***")
+                result = nil
+            end
+
         else
-            print("*** UNIMPLEMENTED EXPRESSION")
-            result = 42  -- DUMMY VALUE
+            print("*** EVAL_EXPR: ERROR ***")
+            result = 404  -- DUMMY VALUE
         end
 
         return result

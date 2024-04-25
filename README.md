@@ -38,6 +38,64 @@
   | [Week-14](#Week-14) | | |
   | [Week-15](#Week-15) | | |
 
+# Week-15
+[Top](#TOP)
+## 2024-04-29
+  - Last day of instruction
+
+# Week-14
+[Top](#TOP)
+## 2024-04-24
+  ### Review
+  - **Fact** = "abc." or "def(a, 28)."
+  - **Rule** = "ghi(X, Y) :- X =< 3, Y is X+5."
+  - **Query** = ghi(3,8 )." or "ghi(3, Y), Y > 9."
+  - A query sets up one or more **goals**. Rile bodies set up **subgoals**
+  ### Prolog: Lists
+  - A few useful things:
+    - "_" (underscore) can be used as a dummy variable. Unifies with anything, and indicates that its value will not be used. Unused variables are called **singleton variables** and Prolog will warn you when it encounters them, you can use underscore to avoid such warnings.
+    - "var/1" Takes any argument. Succeeds if it is a free variable.
+      - var(X) = true, var(5) = false
+    - "nonvar/1" Takes any argument. Succeeds if it is not a free variable.
+    - "call/>=1" - Idk
+  - We can simulate a function in Prolog using a Prolog predicate.
+  - We can use the same idea to simulate **generalized functions**, lets demo this
+    ```pl
+    threeThings(_, _, _).
+    threeMore(X, Y) :- nonvar(X), Y is X+3.
+    threeMore(X, Y) :- var(X), X is Y+3.
+
+    aBitMore(X, Y) :- nonvar(X), Y is x+1.
+    aBitMore(X, Y) :- nonvar(X), Y is x+2.
+    aBitMore(X, Y) :- var(X), X is x+1.
+    aBitMore(X, Y) :- var(X), X is x+2.
+
+    head([H|_], H).
+    tail([_|T], T).
+
+    len([], 0).
+    len([_|T], N) :- len(T, NN), N is NN+1.
+
+    concat([], L2, L2).
+    concat([H|T], L2, [H|T3]) :- concat(T, L2, T3).
+
+    map(F, [], []).
+    map(F, [H1|T1], [H2|T2]) :- call(F, H1, H2), map(F, T1, T2).
+
+    zip(_, [], []).
+    zip([_|_], _, []).
+    zip([H1|T1], [H2|T2], T3) :- zip()
+    ```
+## 2024-04-22
+  ### Prolog: Simple Programming
+  - **Facts** and **rules** generally go in a source file. **Queries** are entered interactively.
+  - A **fact** is written as an atom or compound term followed by a period.
+  - A fact is generally legal as a **query** also.
+  - A **rule** looks like a fact, then ":-", then a query. The term before the :- is the **head** of the rule, and afterward if the **body**.
+  - "/" is for floating-point division, and "//" is integer division. "**" is exponentiation.
+  - "=" means unifiable and "\=" means not unifiable.
+  - Numeric comparisons are not shaped like arrows, but otherwise use the same symbols ">="
+
 # Week-13
 [Top](#TOP)
 ## 2024-04-19
