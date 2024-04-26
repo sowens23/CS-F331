@@ -45,6 +45,86 @@
 
 # Week-14
 [Top](#TOP)
+## 2024-04-26
+  ### Review
+  - In **logic programming**, a computer program is a **knowledge base**. 
+  - There are two kinds of knowledge: **Facts** and **rules**.
+  - Execution is driven by a **query** which is determined provable through facts and rules.
+  - **Prolog** is the most important logic programming language.
+  - "\\+" is a 1-argument predicate that works as a prefix operator. It succeeds if it's argument fails. ie. ?- \\+ 3 = 5. true.
+  - An underscore "_" is a dummy variable, used in place of **singleton variables**, otherwise known as unused variables.
+  ### Prolog: Flow of Control
+  - *Write/1* takes any term; It is input only. Always succeeds. Writes its argument to standard output. An atom is written as a string. 
+  - *n1/0*: Always succeeds. Writes a newline to standard out
+  - *read/1*: Reads a Prolog term, which must be followed by a period from standard input. Unifies this with its argument.
+  - *flush/0*: Ensures that previous writes have completted. Do this before a *read*, if there are prior *write* calls.
+  - *true/0*: Succeeds and *fail/0*: Fails.
+  - Let's write some code using recursion.
+    - We want to write some code for "print_squares(A, B)" where it prints the square of a, to b.
+    ```pl
+    print_squares(A, B) :-
+      A =< B,      
+      S is A*A,
+      write(A), write(' squared is '), write(S), nl
+      A1 is A + 1, print_squares(A1, B).
+    ```
+  - Write a Prolog predicate *myFor* that encapsulates the general idea of a counted for-loop. Rewrite *print_squares* using this for-loop predicate.
+    ```pl
+    myFor(A, B, X) :- A =< B, X = A. 
+    myFor(A, B, X) :- B, A1 is A+1, myFor(A1, B, X). 
+    
+    print_squares2(A, B) :-
+      myFor(A, B, I), 
+        S is I*I,
+        write(I), write(' squared is '), write(S), nl,
+      fail.
+    ```
+  - In order to be truly 'full-featured' programming languages, logic PLs will "cheat" by including features that are not logical in nature.
+  Prolog's cheat is the **cut**: "!". It takes no arguments, and always succeeds, and disallows backtracking.
+  - Cut can be used as the rough equivalent of a c++ *break*.
+  - Let's write a Prolog predicate *print_near_sqrt/1*, which takes a positive integer x and returns the largest integer whose square is at most x.
+    ```pl
+    print_near_sqrt(X) :-
+      X1 is X+1,
+      between(1, X1, I),
+        I2 is I * I,
+      I2 > X, !,
+      I1 is I-1, write(I1), nl.
+    ```
+  - Lets use Cut to simlate an if/else statement.
+    | C++ | Prolog |
+    | --- | --- |
+    | ``` void test_big(int n) { if (n > 20) cout << n << " IS A BIG NUMBER." << endl; else cout << n << " is not a big number." << endl;} ``` | ``` test_big(N) :- N > 20, !, write(N), write(' IS A BIG NUMBER!'), nl. test_big(N) :- write(N), write(' is not a big number.'), nl. ``` |
+  - Use *cut* to write *gcd* predicate.
+    ```pl
+    gcd(0, B, B).
+    gcd(A, B, C) :- A > 0, BMA is B mod A, gcd(BMA, A, C).
+
+    gcd2(0, B, B) :- !.
+    gcd2(A, B, C) :- A > 0, BMA is B mod A, gcd2(BMA, A, C).
+    ```
+  - Cut allows us to write negation. Write a *not* predicate which takes a zero-argument predicate or compound term, and succeeds if it fails.
+    ```pl
+    not(T) :- call(T), !, fail.
+    not(_).
+    ``` 
+  - *true/0* always succeeds, but just once. A predicate can succeed more than once.
+  - Write a repeatably true predicate
+    ```pl
+    myRepeat.
+    myRepeat :- myRepeat.
+    ```
+  - Write a predicate *squares_interact/0* that prints square of a number, and is repeated until input is 0.
+    ```pl
+    squares_interact :- 
+      myRepeat, write('Input a number followed by a dot (0 to quit): '),
+      flush, read(X), nl,
+      write('You typed: '), write(X), nl,
+      X2 is X*X,
+      write('Its square'), write(X), nl
+      nl,
+    x = 0, !, write('Bye!'), nl. 
+    ```
 ## 2024-04-24
   ### Review
   - **Fact** = "abc." or "def(a, 28)."

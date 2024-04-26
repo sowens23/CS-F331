@@ -15,6 +15,13 @@
 '   3.  Compile : "vbc filename.vb"
 '       Run     : "filename.exe"
 
+
+' Features - Directions
+' - Add 3 more message boxes, perhaps load through loop
+' - Then make some minor graphic display
+' - Something else idk.
+
+
 Imports System.Windows.Forms
 Imports System.Drawing
 
@@ -40,6 +47,8 @@ Module Program
       AddHandler form.Load, Sub(sender, e) CreateFirstLine(form)
 
     ' Load and set the form icon
+    ' TODO: Make this work with a URL
+    ' form.Icon = New Icon("https://github.com/sowens23/CS-F331/tree/main/homework/honorsproject/media/Straleos.ico")
     form.Icon = New Icon("E:\OneDrive\Documents\GitHub\CS-F331\homework\honorsproject\media\Straleos.ico")
 
 
