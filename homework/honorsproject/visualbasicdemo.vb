@@ -20,119 +20,61 @@ Imports System.Drawing
 
 Module Program
 
+
+  ' ****************************************************************************************************************************************
+  '
+  ' Main
+  '
+  ' ****************************************************************************************************************************************
+
+
   Sub Main()
     Application.EnableVisualStyles()
     Application.SetCompatibleTextRenderingDefault(False)
 
-    ' ****************************************************************************************************************************************
-		'
-    ' WINDOW TITLE
-		'
-    ' ****************************************************************************************************************************************
-
     ' Create the Form and set its properties
-    Dim page1 As New Form()
-      page1.Text = "CS-331 Honors Project Demo"
-      page1.ClientSize = New Size(300, 200) ' Adjust size as needed
-      page1.MinimumSize = New Size(50, 50) ' Set minimum size for readability
+    Dim form As New Form()
+      form.Text = "CS-331 Honors Project Demo"
+      form.ClientSize = New Size(250, 300) ' Adjust size as needed
+      form.MinimumSize = New Size(250, 150) ' Set minimum size for readability
+      AddHandler form.Load, Sub(sender, e) CreateFirstLine(form)
 
-    ' ****************************************************************************************************************************************
-		'
-    ' WINDOW BODY
-		'
-    ' ****************************************************************************************************************************************
+    ' Load and set the form icon
+    form.Icon = New Icon("E:\OneDrive\Documents\GitHub\CS-F331\homework\honorsproject\media\Straleos.ico")
 
-    ' Create the Next button for the first line
-    Dim nextButton1 As New Button()
-      nextButton1.Text = "Next"
-      nextButton1.Size = New Size(50, 20)
-      nextButton1.Location = New Point(160, 20) ' Positioned to the right of the first message
-      AddHandler nextButton1.Click, Sub(sender, e) CreateSecondLine(page1)
 
-    ' Create a label for "Hello, World!"
-    Dim message1 As New Label()
-      message1.Text = "Hello, world!"
-      message1.AutoSize = True
-      message1.Location = New Point(60, 20) ' Shifted right by 50 pixels
-
-    ' ****************************************************************************************************************************************
-		'
-    ' WINDOW FOOTER
-		'
-    ' ****************************************************************************************************************************************
-
-    ' Create the Exit button and set its properties
     Dim exitbutton As New Button()
       exitbutton.Text = "Exit"
       exitbutton.Size = New Size(50, 20)
-      exitbutton.Location = New Point(page1.ClientSize.Width - exitbutton.Width, page1.ClientSize.Height - exitbutton.Height)
-      AddHandler exitbutton.Click, Sub(sender, e) page1.Close()
+      exitbutton.Location = New Point(form.ClientSize.Width - exitbutton.Width, form.ClientSize.Height - exitbutton.Height)
+      AddHandler exitbutton.Click, Sub(sender, e) form.Close()
+      form.Controls.Add(exitbutton)
 
-    ' ****************************************************************************************************************************************
-		'
-    ' WINDOW HANDLERS
-		'
-    ' ****************************************************************************************************************************************
-
-    ' Create the Exit button and set its properties
-
-    ' Handler for resizing
-    AddHandler page1.Resize, Sub(sender, e)
-		AddHandler nextButton1.Click, Sub(senderArg, eArg) RemoveButton(nextButton1, page1)
-
-
-    ' Add controls to the page1
-    page1.Controls.Add(message1)
-    page1.Controls.Add(nextButton1)
-    page1.Controls.Add(exitbutton)
-
-		' button.Width = page1.ClientSize.Width * 0.1
-		If page1.ClientSize.Width < 50 Then
-			exitbutton.width = page1.ClientSize.Width
-		Else
-			exitbutton.width = 50 
-		End If
-		exitbutton.Location = New Point(page1.ClientSize.Width - exitbutton.Width, page1.ClientSize.Height - exitbutton.Height)
-  	End Sub
-
-    ' Apply custom styling to the page1
-    StyleWindow(page1)
-
-    ' Run the application
-    Application.Run(page1)
+    StyleWindow(form)
+    Application.Run(form)
   End Sub
 
-	' ****************************************************************************************************************************************
-	'
-	' Display 2nd Line
-	'
-	' ****************************************************************************************************************************************
 
-  Sub CreateSecondLine(page1 As Form)
-    ' Create the second label and set its properties
-    Dim message2 As New Label()
-      message2.Text = "Here I will demonstrate."
-      message2.AutoSize = True
-      message2.Location = New Point(10, 50) ' Position below the first message
+  ' ****************************************************************************************************************************************
+  '
+  ' Utility Functions
+  '
+  ' ****************************************************************************************************************************************
 
-    ' Create the Next button for the second line
-    Dim nextButton2 As New Button()
-      nextButton2.Text = "Next"
-      nextButton2.Size = New Size(50, 20)
-      nextButton2.Location = New Point(160, 50) ' Positioned to the right of the second message
 
-    ' Add second line controls to the page1
-    page1.Controls.Add(message2)
-    page1.Controls.Add(nextButton2)
-
-		
+	' Function to adjust control button positions when box is scaled
+  Sub AdjustControlPositions(form As Form)
+      ' This handles dynamic control adjustments when resizing
+      Dim exitbutton As Button = form.Controls.OfType(Of Button)().FirstOrDefault(Function(x) x.Text = "Exit")
+      If exitbutton IsNot Nothing Then
+          If form.ClientSize.Width < 50 Then
+              exitbutton.Width = form.ClientSize.Width
+          Else
+              exitbutton.Width = 50
+          End If
+          exitbutton.Location = New Point(form.ClientSize.Width - exitbutton.Width, form.ClientSize.Height - exitbutton.Height)
+      End If
   End Sub
-
-	' ****************************************************************************************************************************************
-	'
-	' SUB FUNCTIONS
-	'
-	' ****************************************************************************************************************************************
 
 	' Function to style window at start of main
 	Sub StyleWindow(ByVal form As Form) 
@@ -152,6 +94,57 @@ Module Program
     form.Controls.Remove(button)
     button.Dispose()  ' Optionally dispose the button if it's no longer needed
 	End Sub
+
+
+  ' ****************************************************************************************************************************************
+  '
+  ' Creating Interactable Text Boxes
+  '
+  ' ****************************************************************************************************************************************
+  
+
+  ' Creating the first interaction
+  Sub CreateFirstLine(form As Form)
+    ' Setup all controls on the form here
+    Dim message1 As New Label()
+      message1.Text = "Hello, world!"
+      message1.AutoSize = True
+      message1.Location = New Point(60, 20)
+      form.Controls.Add(message1)
+
+    Dim nextButton1 As New Button()
+      nextButton1.Text = "Next"
+      nextButton1.Size = New Size(50, 20)
+      nextButton1.Location = New Point(160, 20)
+      AddHandler nextButton1.Click, Sub(sender, e) 
+        CreateSecondLine(form)
+        RemoveButton(nextButton1, form)
+      End Sub
+      form.Controls.Add(nextButton1)
+
+    ' Adjust control positions based on form size
+    AddHandler form.Resize, Sub(sender, e) AdjustControlPositions(form)
+  End Sub
+
+  ' Creating the second interaction
+  Sub CreateSecondLine(form As Form)
+    ' Create the second label and set its properties
+    Dim message2 As New Label()
+      message2.Text = "Here I will demonstrate."
+      message2.AutoSize = True
+      message2.Location = New Point(10, 50) ' Position below the first message
+
+    ' Create the Next button for the second line
+    Dim nextButton2 As New Button()
+      nextButton2.Text = "Next"
+      nextButton2.Size = New Size(50, 20)
+      nextButton2.Location = New Point(160, 50) ' Positioned to the right of the second message
+
+    ' Add second line controls to the form
+    form.Controls.Add(message2)
+    form.Controls.Add(nextButton2)
+  End Sub
+
 
 End Module
 
