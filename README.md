@@ -16,7 +16,7 @@
   - [CPP Reference Useful Resources](https://en.cppreference.com/w/cpp/links)
 
 ### Big Notes
-  - 
+  - There are two types of languages. Strongly typed, and weakly typed.
 
 # Class Notes and Assignments
   | Weekly Notes | Assignments | Other Notes |
@@ -41,7 +41,48 @@
 # Week-15
 [Top](#TOP)
 ## 2024-04-29
-  - Last day of instruction
+  ### Review
+  - Mutiple rules/facts can be replaced by a singe rule using ";" in it's body. This means OR, where "," means AND.
+  ### Course Wrap-Up
+  - In this class, we study programming languages with a view toward the following:
+    - How programming languages are specified, and how these specifications are used.
+    - What different kinds of programming languages are like.
+    - How certain features differ between various programming languages.
+    - How to write code in various programming languages.
+  - Upon successful completion of this course of CS-331, students should:
+    - Understand concepts of synatax and semantics, and how syntax can be specified. (with grammar)
+    - Understand and have experience implementing basic lexical analysis, parsing, and interpretation.
+    - Understand the various kinds of programming languages and the primary ways in which they differ.
+    - Understand standard programming language features and the forms these take in different programming languages.
+    - Be familiar with the impact (local, glocal, etc.) that choice of programming languages has on programmers and users
+    - Have a basic programming proficiency in multiple significantly different programming langugages.
+  - Things covered:
+    - Specifying the syntax of a PL. Using (**phase structure**) **grammar**, specified in practice using EBNF or something similar.
+    - **Regular expressions**
+    - Two classes of formal languages, and associated grammars that generate them (**Regular**, and **context-free**)
+      - Both of which fall into Type 3 and Type 2 Languages in the **Chomsky Hierarchy**.
+    - A brief intro into formal methods to specify semantics.
+    - We wrote a **lexical analyzer** (lexer), and a **syntax analyzer** (parse), as well as a simple **tree-walk interpreter**.
+  - We also covered five programming language features in depth:
+    - **Compilation & Interpretation**: Runtime & runtime systems. Compiler & interpreter. JIT compilation.
+    - **Type System**: Types & type systems. What type systems are for. Static vs. dynamic. Manifest vs. implicit. Nominal vs. structural. Type safety, soundness.
+    - **Identifiers & Values**: Identifier, namespace, overloading. Value, variable. Scope & lifetime. Implementation & lazy evaluation. Thunks.
+    - **Reflection**: The ability of a program to deal with its own code at runtime: examining it, looking at its properties, and possibly modifying it.
+    - **Execution Model**: Different tasks drive execution in different PLs. Unification.
+  - We covered five different programming languages:
+    - **Lua**: Dynamic PL. Fixed set of types. Small versatile feature set.
+    - **Haskell**: Pure functional PL. Static typing. Type inference. Write expressions & functions. Execution is evaluation. I/O: return side effect descriptions.
+    - **Forth**: Stack-based concatenative PL. No type checking. Words deal with stacks. Very extensible.
+    - **Scheme**: Lisp-family PL. Dynamic typing. Fixed set of types. Write expressions & procedures. Execution is evaluation. Macros.
+    - **Prolog**:Logic PL. Dynamic typing. Predicates. Write facts & rules. Do queries. Execution is unification with goals handled via backtracking search.
+  - The **Big Take-Aways**:
+    - **Take-Away #1**: There are many different ways to think about code and programs. Some of these, though they may be unfamiliar, can be quite worthwhile.
+    - **Take-Away #2**: Learning new programming languages can help you be a better programmer even in more familiar programming languages.
+    - **Take-Away #3**: Cross-pollination is constantly occurring between programming languages. Many features being added to more mainstream PLs today are taken from the Lisp family or functional PLs like Haskell
+    - **Take-Away #4**: Formal syntax specification—precisely describing the structure of text—is well understood and often used.
+    - **Take-Away #5**: Regular expressions form a practical idea that is used in many power-user-level tools.
+    - **Take-Away #6**: The state machine is a useful software-design paradigm that is easy to implement.
+    - **Take-Away #7**: Parsing, in its most general meaning, is making sense of input. Computers need to do parsing a lot. Writing a parser is, therefore, a useful skill.
 
 # Week-14
 [Top](#TOP)
@@ -1707,7 +1748,7 @@
   ### Review
   - **Dynamic**: *at runtime*.
   - **Static**: *before runtime*.
-  - **Syntax**: the correct *structure* of code.
+  - **Syntax**: the correct *structure* of code. We specify syntax with **grammar**.
   - **Semantics**: the meaning *meaning* of code.
   - A (**formal**) **language** is a set of *strings*.
     - Not the same as a programming language!
