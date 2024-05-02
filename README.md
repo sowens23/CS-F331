@@ -915,7 +915,7 @@
 
 ## 2024-03-06
   ### Review
-  - An **I/O action** is a value that holds a description of a sequence of zero or more side effects, plug a wrapped (potential) value
+  - An **I/O action** is a value that holds a description of a sequence of zero or more side effects, plus a wrapped (potential) value
   - Do-expressions are syntactic sugar around operators for I/O actions
   ### Haskell: Data (cont'd)
   - Haskell calls IO a **type constructor**
@@ -969,14 +969,13 @@
     ```
   ### Forth PL Feature: Identifiers & Values
   - An **identifier** is the name of something in source code.
-  - Every identifier lies in some **namespace
+  - Every identifier lies in some **namespace**
   - The code from which an identifier is accessible forms the idenifier's **scope**
   - **Static scope**: scope is determined before runtime.
   - This is typically **lexical scope**: The scope consists of a fixed portion of the program's source code.
   - **Dynamic scope**: scope is determined at runtime.
   - A **value** might be a number or a string or a Boolean or some kind of object
   - An **expression** is an entity that has a value.
-  -  
 
 ## 2024-03-04
   ### Review
@@ -1007,9 +1006,6 @@
 [Top](#TOP)
 ## 2024-03-01
   - In Vegas for Aivon's wedding.
-  ### Review
-  - 
-  ### Haskell: I/O
 
 ## 2024-02-28
   - In Vegas for Aivon's wedding.
@@ -1115,7 +1111,7 @@
   - **Parsing is making sense of input**
   - Things we are concerned about regarding PL's: Type, Static typing, Manifest typing vs. implicit typing, Type annotation, Type inference, First-class functions, Sound type system.
   - A PL or PL construct is **type-safe** if it forbids operations that are incorrect for the types on which they operate.
-    - Avoid using **strong and weak** terms when speaking about typing.
+    - Avoid using **strong and weak** terms when speaking about typing. [Norman Ramsey Kills Kittens](https://stackoverflow.com/users/41661/norman-ramsey)
   ### PL Category: Functional PL
   - **Imperative programming** is writing code to tell a computer what to do. This is typical. Examples; C++, java, lua
   - **Declarative programming** is more along the lines of telling a computer what is true, and can be thought of in terms of asking a question.
@@ -1370,7 +1366,7 @@
   
 ## 2024-02-05
   ### Review
-  - A closure is a function that carries with it a reference t or copy of the environment in which it was created.
+  - A closure is a function that carries with it a reference to, or a copy of the environment in which it was created.
   ### Lua: Advanced Flow
   - A **coroutine** is a function that can temporarily give up control (**yield**) at any point and then later be **resumed**.
     - Each time a coroutine temporarily gives up control, it may pass one or more values back to it's caller.
@@ -1462,17 +1458,17 @@
       ```
     - Glenn Chappel, 2024 "If someone pointed a gun at me and said, write embedded software for a pacemaker or I'll blow your head off, I'd write it in C"
   ### Unit Overview - Lexing & Parsing
-    - Our third unit: **Lexing & Parsing** topics: Introduction to lexing & parsing, the basics of lexical analysis, State-machine lexing, the basics of syntax analysis, recursie-descent parsing, shift-reduce parsing, parsing wrap-up
+  - Our third unit: **Lexing & Parsing** topics: Introduction to lexing & parsing, the basics of lexical analysis, State-machine lexing, the basics of syntax analysis, recursie-descent parsing, shift-reduce parsing, parsing wrap-up
   ### Intro to Lexing & Parsing
-    - Here are some things a compiler needs to do:
-      1. **Determine whether the iven program is syntactically correct, and, if so, find it's structure.**
-      2. Determine all identifiers and what they refer to.
-      3. If compiling code in a statically typed PL, determine types and check that no typing rules are broken.
-      4. Generate code in the target language.
-    - **Parsing**: Determining whether input is syntactically correct, and, if so, finding it's structure.
-    - Software that does parsing is called a **parser**.
-    - A parser outputs most commonly an **abstract syntax tree (AST)**. This tree usually leaves out things like punctuation, which only serve to guide the parser, or human readers.
-    - A preprocessing step is often split off from parsing: **lexical analysis** or **lexing** where input is split into **lexemes** (words, roughly), and the category of each is determined. Things like whitespace and comments are usually skipped.
+  - Here are some things a compiler needs to do:
+    1. **Determine whether the given program is syntactically correct, and, if so, find it's structure.**
+    2. Determine all identifiers and what they refer to.
+    3. If compiling code in a statically typed PL, determine types and check that no typing rules are broken.
+    4. Generate code in the target language.
+  - **Parsing**: Determining whether input is syntactically correct, and, if so, finding it's structure.
+  - Software that does parsing is called a **parser**.
+  - A parser outputs most commonly an **abstract syntax tree (AST)**. This tree usually leaves out things like punctuation, which only serve to guide the parser, or human readers.
+  - A preprocessing step is often split off from parsing: **lexical analysis** or **lexing** where input is split into **lexemes** (words, roughly), and the category of each is determined. Things like whitespace and comments are usually skipped.
 
 # Week-3
 [Top](#TOP)
@@ -1665,7 +1661,7 @@
   - A complete specification is called a **program**
   - **Entity** described an arbitrary *thing* in a program: a variable, expression, function, class, etc.
   - An **expression** is an entity that has a value
-    - -45.4, x, (3+g/6)*k, ff(z), "Ostrich"
+    - Examples include: -45.4, x, (3+g/6)*k, ff(z), "Ostrich"
   
   ```
   c++
@@ -1691,17 +1687,16 @@
   Prolog
     main :- write('Hello, world!'), nl.
   ```
-  - 
 
 ## 2024-01-26
-  - Sick, zoomed in using discord and another student
+  - Sick
 
 ## 2024-01-22
   ### Review (Formal Languages)
   - A **formal language** is *only* a set of strings.
     - C++ is **not** a formal language.
   - We can specify the syntax of **regular expressions** or (**regexes**) by showing how to build them from small pieces.
-    - We can list the individual pieces ex. a single character: a, and an empty string $$\\epsilon$$
+    - We can list the individual pieces ex. a single character: a, and an empty string
 
 # Week-1
 [Top](#TOP)
@@ -1729,7 +1724,6 @@
   - Good compilers will proceed in a number of distinct steps. Transforming code into **intermediate representations** (IR), which ultimately becomes the target language
     - For example, the C++ compiler used by Apple's Xcode is called **Clang**, which does not target native code, but intermediate machine-independent code specified by the **Low-Level Virtual Machine (LLVM)** project, this intermediate code is then converted to native code. 
   - There are advantages to breaking down your compilation process into multiple stages.
-  - To 
   #### Optimization
   - To **optimize** code means to transform it so that it still performs the same task, but is better somehow, usually faster.
   - A compiler that can perform optimization is an **optimizing compiler**. Today, most major compilers are optimizing.
@@ -1866,6 +1860,4 @@
   - If we start with "S"
     - Grammar rules are: S -> xSy, S -> ε
     - We can turn this into an infinite multiple of 
-  
   - Grammar containing  strings = {ε}
-  - Grammar containing
