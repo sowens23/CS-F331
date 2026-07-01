@@ -14,29 +14,34 @@
   - [GitHubPortal](https://github.com/sowens23/Newbie-Gains/blob/main/README.md)
   - [CS-F331 Class Homepage](https://www.cs.uaf.edu/~chappell/class/2024_spr/cs331/)
   - [CPP Reference Useful Resources](https://en.cppreference.com/w/cpp/links)
+  - https://docs.swift.org/swift-book/documentation/the-swift-programming-language/aboutthelanguagereference
+  - https://docs.python.org/3/reference/lexical_analysis.html
+  - https://en.cppreference.com/w/cpp/links#C.2B.2B_Language_and_library_references
+  - https://www.cs.uaf.edu/~chappell/class/2026_spr/cs331/read/comp_int.html
+  - https://www.cs.uaf.edu/~chappell/class/2026_spr/cs331/read/reflect.html
+  - https://en.wikipedia.org/wiki/Operational_semantics
 
 ### Big Notes
-  - There are two types of languages. Strongly typed, and weakly typed.
+  - There are two types of languages. Strongly typed, and weakly typed. /s
 
 # Class Notes and Assignments
   | Weekly Notes | Assignments | Other Notes |
   | --- | --- | --- |
-  | [Week-1](#Week-1) | | |
-  | [Week-2](#Week-2) | | |
-  | [Week-3](#Week-3) | | |
-  | [Week-4](#Week-4) | | |
-  | [Week-5](#Week-5) | | |
-  | [Week-6](#Week-6) | | |
-  | [Week-7](#Week-7) | | |
-  | [Week-8](#Week-8) | | |
-  | [Week-9](#Week-9) | | |
-  | [Week-10](#Week-10) | | |
-  | [Week-11](#Week-11) | | |
-  | [Week-12](#Week-12) | | |
-  | [Week-13](#Week-13) | | |
-  | [Week-13](#Week-13) | | |
-  | [Week-14](#Week-14) | | |
-  | [Week-15](#Week-15) | | |
+  | [Week-1](#Week-1) | | [Read “Compilers and Interpreters”](https://www.cs.uaf.edu/~chappell/class/2026_spr/cs331/read/comp_int.html) |
+  | [Week-2](#Week-2) | [Assignment 1 (Formal Languages)](https://github.com/sowens23/CS-F331/tree/main/homework/assignment1) | [Read the Lua-Users Wiki LuaTutorial](http://lua-users.org/wiki/TutorialDirectory) |
+  | [Week-3](#Week-3) | | [Read “A Primer on Type Systems”](https://www.cs.uaf.edu/~chappell/class/2026_spr/cs331/read/types_primer.html) |
+  | [Week-4](#Week-4) | [Assignment 2 (Coding in Lua)](https://github.com/sowens23/CS-F331/tree/main/homework/assignment2) | [Read “Learn Haskell in 10 minutes”](https://wiki.haskell.org/Learn_Haskell_in_10_minutes) |
+  | [Week-5](#Week-5) | [Assignment 3 (Writing a Lexer)](https://github.com/sowens23/CS-F331/tree/main/homework/assignment3) | [Read “Reflection in Programming”](https://www.cs.uaf.edu/~chappell/class/2026_spr/cs331/read/reflect.html) |
+  | [Week-6](#Week-6) | [Assignment 4 (Writing a Parser)](https://github.com/sowens23/CS-F331/tree/main/homework/assignment4) | [Read “Identifiers, Values, and Variables”](https://www.cs.uaf.edu/~chappell/class/2026_spr/cs331/read/idval.html) |
+  | [Week-7](#Week-7) | | [Read “A Quick Introduction to Scheme”](https://www.cs.uaf.edu/~chappell/class/2026_spr/cs331/read/scheme_quick.html) |
+  | [Week-8](#Week-8) | | Midterm - Spring Break |
+  | [Week-9](#Week-9) | [Assignment 5 (Coding in Haskell)](https://github.com/sowens23/CS-F331/tree/main/homework/assignment5) | |
+  | [Week-10](#Week-10) | | [Read “Programming-Language Execution Models”](https://www.cs.uaf.edu/~chappell/class/2026_spr/cs331/read/exec_model.html) |
+  | [Week-11](#Week-11) | | [Read “A Quick Introduction to Prolog”](https://www.cs.uaf.edu/~chappell/class/2026_spr/cs331/read/prolog_quick.html) |
+  | [Week-12](#Week-12) | [Assignment 6 (Writing an Interpreter)](https://github.com/sowens23/CS-F331/tree/main/homework/assignment6) | |
+  | [Week-13](#Week-13) | [Assignment 7 (Coding in Scheme & Prolog)](https://github.com/sowens23/CS-F331/tree/main/homework/assignment7) | |
+  | [Week-14](#Week-14) | | Final Exam Prep |
+  | [Week-15](#Week-15) | | Final Exam |
 
 # Week-15
 [Top](#TOP)
